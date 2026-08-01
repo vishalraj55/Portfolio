@@ -1,0 +1,192 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #0a0a0c;
+  --color-ink-2: #0e0e11;
+  --color-surface: #131316;
+  --color-surface-2: #1b1b1f;
+  --color-line: #29292e;
+  --color-line-soft: #1d1d21;
+  --color-bone: #ece7df;
+  --color-bone-dim: #b9b5ac;
+  --color-muted: #86847e;
+  --color-amber: #e5824a;
+  --color-amber-dim: #7a4a30;
+  --color-teal: #3f7379;
+  --color-teal-dim: #1e3336;
+
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+  --font-mono: var(--font-mono);
+
+  --ease-cinema: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --breakpoint-xs: 22.5rem;
+}
+
+@media (pointer: fine) and (min-width: 768px) {
+  * {
+    cursor: none !important;
+  }
+}
+
+@layer base {
+  * {
+    border-color: var(--color-line);
+  }
+  html {
+    background: var(--color-ink);
+  }
+  body {
+    font-family: var(--font-body);
+    font-feature-settings: "ss01" 1;
+  }
+  ::selection {
+    background: var(--color-amber);
+    color: var(--color-ink);
+  }
+  :focus-visible {
+    outline: 1.5px solid var(--color-amber);
+    outline-offset: 3px;
+  }
+  a,
+  button {
+    -webkit-tap-highlight-color: transparent;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer utilities {
+  /* ---- fluid editorial type scale ---- */
+  .font-display {
+    font-family: var(--font-display);
+  }
+  .font-mono {
+    font-family: var(--font-mono);
+  }
+  .text-hero {
+    font-size: clamp(3.4rem, 3rem + 9vw, 11.5rem);
+    line-height: 0.92;
+    letter-spacing: -0.02em;
+  }
+  .text-display-1 {
+    font-size: clamp(2.4rem, 1.9rem + 4.5vw, 6rem);
+    line-height: 0.98;
+    letter-spacing: -0.015em;
+  }
+  .text-display-2 {
+    font-size: clamp(1.9rem, 1.5rem + 2.8vw, 3.75rem);
+    line-height: 1.02;
+    letter-spacing: -0.01em;
+  }
+  .text-display-3 {
+    font-size: clamp(1.4rem, 1.2rem + 1.4vw, 2.2rem);
+    line-height: 1.08;
+  }
+  .text-lead {
+    font-size: clamp(1.05rem, 0.95rem + 0.7vw, 1.5rem);
+    line-height: 1.5;
+  }
+  .text-body-fluid {
+    font-size: clamp(0.95rem, 0.9rem + 0.25vw, 1.0625rem);
+    line-height: 1.65;
+  }
+  .text-label {
+    font-family: var(--font-mono);
+    font-size: clamp(0.65rem, 0.6rem + 0.15vw, 0.75rem);
+    letter-spacing: 0.14em;
+  }
+  .text-timecode {
+    font-family: var(--font-mono);
+    font-size: clamp(0.7rem, 0.65rem + 0.2vw, 0.85rem);
+    letter-spacing: 0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ---- fluid section spacing ---- */
+  .section-pad {
+    padding-block: clamp(4.5rem, 3.5rem + 6vw, 10rem);
+  }
+  .gutter {
+    padding-inline: clamp(1.25rem, 0.8rem + 2.8vw, 5.5rem);
+  }
+
+  /* ---- grain overlay ---- */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.10;
+  mix-blend-mode: screen;
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='180'%20height='180'%3E%3Cfilter%20id='noise'%3E%3CfeTurbulence%20type='fractalNoise'%20baseFrequency='0.9'%20numOctaves='2'%20stitchTiles='stitch'%2F%3E%3C%2Ffilter%3E%3Crect%20width='100%25'%20height='100%25'%20filter='url(%23noise)'%2F%3E%3C%2Fsvg%3E");
+  background-size: 180px 180px;
+  
+}
+
+@keyframes grain-shift {
+  0%   { background-position: 0px 0px; }
+  11%  { background-position: -18px 30px; }
+  22%  { background-position: 40px -25px; }
+  33%  { background-position: -35px 12px; }
+  44%  { background-position: 15px -40px; }
+  55%  { background-position: -20px 45px; }
+  66%  { background-position: 30px 20px; }
+  77%  { background-position: -40px -15px; }
+  88%  { background-position: 20px -30px; }
+  100% { background-position: 0px 0px; }
+}
+
+  /* ---- vignette for cinematic media ---- */
+  .vignette {
+    box-shadow: inset 0 0 12vw rgba(0, 0, 0, 0.65);
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .hairline {
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--color-line) 15%,
+      var(--color-line) 85%,
+      transparent
+    );
+    height: 1px;
+  }
+}
+@layer utilities {
+  .section-bg-work {
+    background: var(--color-ink-2);
+  }
+  .section-bg-about {
+    background: radial-gradient(
+      0% 100% at 20% 0%,
+      var(--color-surface) 0%,
+      var(--color-ink) 60%
+    );
+  }
+  .section-bg-skills {
+    background: var(--color-ink);
+  }
+  .section-bg-contact {
+    background: radial-gradient(
+      100% 120% at 80% 100%,
+      var(--color-surface-2) 0%,
+      var(--color-ink-2) 65%
+    );
+  }
+}
