@@ -6,14 +6,16 @@ import { gsap } from "gsap";
 export default function CustomCursor() {
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
+  const readyRef = useRef(false);
   const filterId = useId().replace(/:/g, "");
   const [isTouch] = useState(() =>
     typeof window !== "undefined"
       ? window.matchMedia("(pointer: coarse)").matches
-      : false
+      : false,
   );
   const [hovering, setHovering] = useState(false);
   const [label, setLabel] = useState("");
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     if (isTouch) return;
@@ -24,19 +26,29 @@ export default function CustomCursor() {
 
     const dotX = gsap.quickTo(dot, "x", { duration: 0.1, ease: "power3.out" });
     const dotY = gsap.quickTo(dot, "y", { duration: 0.1, ease: "power3.out" });
-    const ringX = gsap.quickTo(ring, "x", { duration: 0.45, ease: "power3.out" });
-    const ringY = gsap.quickTo(ring, "y", { duration: 0.45, ease: "power3.out" });
+    const ringX = gsap.quickTo(ring, "x", {
+      duration: 0.45,
+      ease: "power3.out",
+    });
+    const ringY = gsap.quickTo(ring, "y", {
+      duration: 0.45,
+      ease: "power3.out",
+    });
 
     const move = (e: MouseEvent) => {
       dotX(e.clientX);
       dotY(e.clientY);
       ringX(e.clientX);
       ringY(e.clientY);
+      if (!readyRef.current) {
+        readyRef.current = true;
+        setReady(true);
+      }
     };
 
     const onEnter = (e: Event) => {
       const target = (e.target as HTMLElement).closest<HTMLElement>(
-        "[data-cursor]"
+        "[data-cursor]",
       );
       setHovering(true);
       setLabel(target?.dataset.cursor || "");
@@ -50,7 +62,7 @@ export default function CustomCursor() {
     window.addEventListener("mousemove", move);
 
     const hoverEls = document.querySelectorAll(
-      "a, button, [data-cursor], [role='button']"
+      "a, button, [data-cursor], [role='button']",
     );
     hoverEls.forEach((el) => {
       el.addEventListener("mouseenter", onEnter);
@@ -85,7 +97,12 @@ export default function CustomCursor() {
   return (
     <>
       {/* SVG displacement filter */}
-      <svg width="0" height="0" style={{ position: "absolute" }} aria-hidden="true">
+      <svg
+        width="0"
+        height="0"
+        style={{ position: "absolute" }}
+        aria-hidden="true"
+      >
         <defs>
           <filter
             id={filterId}
@@ -123,14 +140,18 @@ export default function CustomCursor() {
         </defs>
       </svg>
 
-<div
+      <div
         ref={dotRef}
-        className="hidden md:block fixed top-0 left-0 z-10000 w-1.5 h-1.5 rounded-full bg-white pointer-events-none -translate-x-1/2 -translate-y-1/2 shadow-[0_0_6px_rgba(255,255,255,0.8)]"
+        className={`hidden md:block fixed top-0 left-0 z-10000 w-1.5 h-1.5 rounded-full bg-white pointer-events-none -translate-x-1/2 -translate-y-1/2 shadow-[0_0_6px_rgba(255,255,255,0.8)] transition-opacity duration-200 ${
+          ready ? "opacity-100" : "opacity-0"
+        }`}
       />
 
-<div
+      <div
         ref={ringRef}
-        className="hidden md:flex fixed top-0 left-0 z-10000 w-11 h-11 rounded-full pointer-events-none -translate-x-1/2 -translate-y-1/2 items-center justify-center overflow-hidden"
+        className={`hidden md:flex fixed top-0 left-0 z-10000 w-11 h-11 rounded-full pointer-events-none -translate-x-1/2 -translate-y-1/2 items-center justify-center overflow-hidden transition-opacity duration-200 ${
+          ready ? "opacity-100" : "opacity-0"
+        }`}
         style={{
           backdropFilter: `blur(4px) url(#${filterId}) saturate(160%)`,
           WebkitBackdropFilter: "blur(4px) saturate(160%)",
