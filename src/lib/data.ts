@@ -21,8 +21,8 @@ export const projects: Project[] = [
       "A Postman-style API testing tool built for developers who live in their terminal.",
     stack: ["Next.js", "NestJS", "PostgreSQL", "Prisma", "Firebase Auth"],
     detail:
-      "Request builder, collections, and auth flows shipped end-to-end — frontend on Vercel, API on Render, data on Neon. Survived a full Prisma v7 migration and a Firebase Admin v14 rewrite without downtime.",
-    link: "https://github.com/vishalraj55",
+      "Request builder, collections, and auth flows shipped end-to-end - frontend on Vercel, API on Render, data on Neon. Survived a full Prisma v7 migration and a Firebase Admin v14 rewrite without downtime.",
+    link: "https://httppilot.vercel.app",
     tone: "amber",
     image: "/img/httppilot.png",
   },
@@ -32,11 +32,11 @@ export const projects: Project[] = [
     role: "Full-stack · Social PWA",
     year: "2025",
     synopsis:
-      "An Instagram-style photo-sharing PWA — feed, follow graph, and image pipeline from scratch.",
+      "An Instagram-style photo-sharing PWA - feed, follow graph, and image pipeline from scratch.",
     stack: ["Next.js", "NestJS", "Cloudinary", "PostgreSQL", "PWA"],
     detail:
       "Multi-step upload with pinch-to-zoom cropping, a follow/unfollow graph, and an installable PWA kept alive on a free-tier host with scheduled pinging.",
-    link: "https://github.com/vishalraj55",
+    link: "https://frameloops.vercel.app",
     tone: "teal",
     image: "/img/frameloops.png",
   },
@@ -49,8 +49,8 @@ export const projects: Project[] = [
       "A movie discovery platform built around fast search and clean, image-forward browsing.",
     stack: ["Next.js", "TypeScript", "REST API"],
     detail:
-      "Search-first UX for exploring films by mood, genre, and cast — built to feel closer to a streaming service than a database query.",
-    link: "https://github.com/vishalraj55",
+      "Search-first UX for exploring films by mood, genre, and cast - built to feel closer to a streaming service than a database query.",
+    link: "https://cinevoxa.vercel.app",
     tone: "amber",
     image: "/img/cinevoxa.png",
   },
@@ -62,8 +62,8 @@ export const projects: Project[] = [
     synopsis: "A native Android app for fast, offline-friendly translation.",
     stack: ["Android", "Kotlin", "Translation API"],
     detail:
-      "Built to translate on the fly with minimal friction — a smaller-scope build that shipped clean and stayed shipped.",
-    link: "https://github.com/vishalraj55",
+      "Built to translate on the fly with minimal friction - a smaller-scope build that shipped clean and stayed shipped.",
+    link: "https://github.com/vishalraj55/linguaflow",
     tone: "teal",
     image: "/img/linguaflow.png",
   },
@@ -74,7 +74,7 @@ export const incidents = [
     label: "Incident 001",
     title: "Atlas IP whitelist expiry",
     detail:
-      "A production 500 traced back to an expired MongoDB Atlas IP whitelist entry — fixed and documented so it couldn't happen twice.",
+      "A production 500 traced back to an expired MongoDB Atlas IP whitelist entry - fixed and documented so it couldn't happen twice.",
   },
   {
     label: "Incident 002",

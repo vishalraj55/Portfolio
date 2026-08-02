@@ -184,7 +184,6 @@ export default function About() {
           className="relative shrink-0 w-[48%]"
           style={{ aspectRatio: "1 / 1.15" }}
         >
-
           {/* Chill bear sticker */}
           <div
             className="about-doodle absolute z-20"
@@ -194,6 +193,7 @@ export default function About() {
               src="/img/Chill.png"
               alt=""
               fill
+              sizes="(max-width: 768px) 96px, 280px"
               className="object-contain"
             />
           </div>
@@ -215,6 +215,7 @@ export default function About() {
                 src="/img/tape.png"
                 alt=""
                 fill
+                sizes="(max-width: 768px) 128px, 220px"
                 className="object-contain"
               />
             </div>
@@ -238,6 +239,7 @@ export default function About() {
                 src="/img/about.png"
                 alt="Vishal Rajbhar"
                 fill
+                sizes="300px"
                 className="object-cover"
               />
             </div>
@@ -260,6 +262,7 @@ export default function About() {
                 src="/img/holdon.png"
                 alt=""
                 fill
+                sizes="(max-width: 768px) 160px, 550px"
                 className="object-contain"
               />
             </div>
@@ -282,6 +285,7 @@ export default function About() {
                 src="/img/bow.png"
                 alt=""
                 fill
+                sizes="(max-width: 768px) 200px, 440px"
                 className="object-contain"
               />
             </div>
@@ -304,6 +308,7 @@ export default function About() {
                 src="/img/drip.png"
                 alt=""
                 fill
+                sizes="(max-width: 768px) 200px, 440px"
                 className="object-contain"
               />
             </div>
@@ -355,6 +360,7 @@ export default function About() {
               src="/img/Chill.png"
               alt=""
               fill
+              sizes="(max-width: 768px) 160px, 280px"
               className="object-contain"
             />
           </div>
@@ -368,6 +374,7 @@ export default function About() {
                 src="/img/tape.png"
                 alt=""
                 fill
+                sizes="(max-width: 768px) 128px, 220px"
                 className="object-contain"
               />
             </div>
@@ -382,6 +389,7 @@ export default function About() {
                 src="/img/drip.png"
                 alt=""
                 fill
+                sizes="(max-width: 768px) 200px, 440px"
                 className="object-contain"
               />
             </div>
@@ -395,6 +403,7 @@ export default function About() {
               src="/img/about.png"
               alt="Vishal Rajbhar"
               fill
+              sizes="(max-width: 768px) 100vw, 45vw"
               className="object-cover"
             />
           </div>
@@ -408,6 +417,7 @@ export default function About() {
                 src="/img/holdon.png"
                 alt=""
                 fill
+                sizes="(max-width: 768px) 160px, 550px"
                 className="object-contain"
               />
             </div>
@@ -422,6 +432,7 @@ export default function About() {
                 src="/img/bow.png"
                 alt=""
                 fill
+                sizes="(max-width: 768px) 200px, 440px"
                 className="object-contain"
               />
             </div>

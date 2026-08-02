@@ -27,7 +27,12 @@ export default function Nav() {
   }, []);
 
   useEffect(() => {
+    const lenis = window.__lenis;
     document.body.style.overflow = open ? "hidden" : "";
+    if (lenis) {
+      if (open) lenis.stop();
+      else lenis.start();
+    }
   }, [open]);
 
   useEffect(() => {
@@ -86,63 +91,66 @@ export default function Nav() {
   }, [open]);
 
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 gutter transition-[background-color,border-color,padding] duration-500 ease-out ${
-        scrolled
-          ? "py-3 bg-ink/85 backdrop-blur-md border-b border-line"
-          : "py-6 border-b border-transparent"
-      }`}
-    >
-      <nav className="flex items-center justify-between">
-        <a
-          href="#hero"
-          className="relative z-50 font-display italic text-lg sm:text-xl tracking-tight text-bone"
-        >
-          VR<span className="text-amber not-italic">.</span>
-        </a>
+    <>
+      <header
+        className={`fixed top-0 left-0 right-0 z-50 gutter transition-[background-color,border-color,padding] duration-500 ease-out ${
+          scrolled
+            ? "py-3 bg-ink/85 backdrop-blur-md border-b border-line"
+            : "py-6 border-b border-transparent"
+        }`}
+      >
+        <nav className="flex items-center justify-between">
+          
+<a
+  href="#hero"
+  className="relative z-50 font-display italic text-lg sm:text-xl tracking-tight text-bone"
+>
+  VR<span className="text-amber not-italic">.</span>
+</a>
 
-        <ul className="hidden md:flex items-center gap-9">
-          {LINKS.map((l, i) => (
-            <li key={l.href} className="flex items-center gap-2">
-              <span className="text-label text-muted">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <a
-                href={l.href}
-                className="text-label uppercase text-bone-dim hover:text-amber transition-colors duration-300"
-              >
-                {l.label}
-              </a>
-            </li>
-          ))}
-        </ul>
+          <ul className="hidden md:flex items-center gap-9">
+            {LINKS.map((l, i) => (
+              <li key={l.href} className="flex items-center gap-2">
+                <span className="text-label text-muted">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <a
+                  href={l.href}
+                  className="text-label uppercase text-bone-dim hover:text-amber transition-colors duration-300"
+                >
+                  {l.label}
+                </a>
+              </li>
+            ))}
+          </ul>
 
-        <a
-          href="#contact"
-          className="hidden md:inline-flex items-center gap-2 text-label uppercase border border-line rounded-full px-4 py-2 text-bone hover:border-amber hover:text-amber transition-colors duration-300"
-        >
-          Available for hire
-          <span className="w-1.5 h-1.5 rounded-full bg-amber animate-pulse" />
-        </a>
+          <a
+            href="#contact"
+            className="hidden md:inline-flex items-center gap-2 text-label uppercase border border-line rounded-full px-4 py-2 text-bone hover:border-amber hover:text-amber transition-colors duration-300"
+          >
+            Available for hire
+            <span className="w-1.5 h-1.5 rounded-full bg-amber animate-pulse" />
+          </a>
 
-        <button
-          onClick={() => setOpen((v) => !v)}
-          className="md:hidden relative z-50 flex flex-col gap-1.5 w-8 h-8 items-center justify-center"
-          aria-label="Toggle menu"
-          aria-expanded={open}
-        >
-          <span
-            className={`block h-px w-6 bg-bone transition-transform duration-300 ${
-              open ? "translate-y-0.75 rotate-45" : ""
-            }`}
-          />
-          <span
-            className={`block h-px w-6 bg-bone transition-transform duration-300 ${
-              open ? "-translate-y-0.75 -rotate-45" : ""
-            }`}
-          />
-        </button>
-      </nav>
+          <button
+            onClick={() => setOpen((v) => !v)}
+            className="md:hidden relative z-50 flex flex-col gap-1.5 w-8 h-8 items-center justify-center"
+            aria-label="Toggle menu"
+            aria-expanded={open}
+          >
+            <span
+              className={`block h-px w-6 bg-bone transition-transform duration-300 ${
+                open ? "translate-y-0.75 rotate-45" : ""
+              }`}
+            />
+            <span
+              className={`block h-px w-6 bg-bone transition-transform duration-300 ${
+                open ? "-translate-y-0.75 -rotate-45" : ""
+              }`}
+            />
+          </button>
+        </nav>
+      </header>
 
       <div
         ref={layerRef}
@@ -195,6 +203,6 @@ export default function Nav() {
           </li>
         </ul>
       </div>
-    </header>
+    </>
   );
 }

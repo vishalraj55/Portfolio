@@ -73,13 +73,13 @@ export default function Skills() {
     >
       <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14">
         <div>
-          <p className="text-label uppercase text-amber mb-3">04 — The Kit</p>
+          <p className="text-label uppercase text-amber mb-3">04 - The Kit</p>
           <h2 className="font-display text-display-2 text-bone">
             What&rsquo;s in the bag.
           </h2>
         </div>
         <p className="text-body-fluid text-muted max-w-md">
-          The stack I reach for by default — chosen for shipping speed, not
+          The stack I reach for by default - chosen for shipping speed, not
           for the résumé.
         </p>
       </div>

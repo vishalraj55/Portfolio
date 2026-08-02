@@ -7,6 +7,11 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
+declare global {
+  interface Window {
+    __lenis: Lenis | null;
+  }
+}
 export default function SmoothScroll({
   children,
 }: {
@@ -17,7 +22,7 @@ export default function SmoothScroll({
   useEffect(() => {
     const isCoarse = window.matchMedia("(pointer: coarse)").matches;
     const reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
+      "(prefers-reduced-motion: reduce)",
     ).matches;
 
     if (reduceMotion) return;
@@ -30,6 +35,7 @@ export default function SmoothScroll({
       wheelMultiplier: 1,
     });
     lenisRef.current = lenis;
+    window.__lenis = lenis;
 
     lenis.on("scroll", ScrollTrigger.update);
 
@@ -40,6 +46,7 @@ export default function SmoothScroll({
 
     return () => {
       lenis.destroy();
+      window.__lenis = null;
       gsap.ticker.remove((time) => lenis.raf(time * 1000));
     };
   }, []);

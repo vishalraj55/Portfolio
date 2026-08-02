@@ -26,7 +26,7 @@ export default function Contact() {
       id="contact"
       className="section-pad gutter border-t border-line flex flex-col gap-10"
     >
-      <p className="text-label uppercase text-amber">05 — Roll Credits</p>
+      <p className="text-label uppercase text-amber">05 - Roll Credits</p>
 
       <div className="flex flex-col gap-6">
         <h2 className="font-display text-display-1 text-bone max-w-3xl">
@@ -53,7 +53,11 @@ export default function Contact() {
               className="w-4 h-4 sm:w-5 sm:h-5 fill-none stroke-bone group-hover:stroke-amber"
               strokeWidth="1.5"
             >
-              <path d="M7 17L17 7M17 7H9M17 7V15" strokeLinecap="round" strokeLinejoin="round" />
+              <path
+                d="M7 17L17 7M17 7H9M17 7V15"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
           </span>
         </motion.a>
@@ -67,7 +71,11 @@ export default function Contact() {
           value="vishalraj55"
           href="https://github.com/vishalraj55"
         />
-        <ContactMeta label="Response" value="Within 24h" />
+        <ContactMeta
+          label="LinkedIn"
+          value="vishal rajbhar"
+          href="https://linkedin.com/in/vishalraj55"
+        />
       </div>
     </section>
   );
