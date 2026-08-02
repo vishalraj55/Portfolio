@@ -94,7 +94,7 @@ export default function Hero() {
           </p>
         </motion.div>
 
-        <h1 className="font-display text-hero text-bone ml-[-0.02em] mt-3">
+        <h1 className="font-display text-hero text-bone ml-[-0.02em] mt-1">
           <span className="block overflow-hidden">
             <motion.span variants={rise} className="block">
               VISHAL
@@ -120,7 +120,7 @@ export default function Hero() {
           initial="hidden"
           animate="show"
           transition={{ delay: 0.5 }}
-          className="md:col-span-6 md:col-start-7 lg:col-span-5 lg:col-start-8 text-lead text-bone-dim md:text-right"
+          className="md:col-span-6 md:col-start-7 lg:col-span-5 uppercase lg:col-start-8 text-lead text-bone-dim md:text-right"
         >
           I build fast, focused software full-stack, from a Postgres schema to
           the pixel that ships. Four products shipped, three production

@@ -130,7 +130,7 @@ export default function CustomCursor() {
 
 <div
         ref={ringRef}
-        className="fixed top-0 left-0 z-10000 w-11 h-11 rounded-full pointer-events-none -translate-x-1/2 -translate-y-1/2 flex items-center justify-center overflow-hidden"
+        className="hidden md:flex fixed top-0 left-0 z-10000 w-11 h-11 rounded-full pointer-events-none -translate-x-1/2 -translate-y-1/2 items-center justify-center overflow-hidden"
         style={{
           backdropFilter: `blur(4px) url(#${filterId}) saturate(160%)`,
           WebkitBackdropFilter: "blur(4px) saturate(160%)",

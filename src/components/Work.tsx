@@ -109,12 +109,20 @@ export default function Work() {
 
   const handleLinkEnter = (i: number) => () => {
     gsap.to(glowRefs.current[i], { opacity: 1, duration: 0.25 });
-    gsap.to(linkRefs.current[i], { scale: 1.03, duration: 0.3, ease: "power3.out" });
+    gsap.to(linkRefs.current[i], {
+      scale: 1.03,
+      duration: 0.3,
+      ease: "power3.out",
+    });
   };
 
   const handleLinkLeave = (i: number) => () => {
     gsap.to(glowRefs.current[i], { opacity: 0, duration: 0.35 });
-    gsap.to(linkRefs.current[i], { scale: 1, duration: 0.35, ease: "power3.out" });
+    gsap.to(linkRefs.current[i], {
+      scale: 1,
+      duration: 0.35,
+      ease: "power3.out",
+    });
   };
 
   return (
@@ -201,7 +209,7 @@ export default function Work() {
                 </div>
 
                 <div className="mt-6">
-                  <div className="mb-3 flex items-baseline justify-between gap-4">
+                  <div className="mb-3 flex flex-col gap-1">
                     <h3 className="font-display text-display-3 text-bone">
                       {p.title}
                     </h3>
