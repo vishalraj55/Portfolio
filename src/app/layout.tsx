@@ -1,15 +1,21 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Inter, JetBrains_Mono } from "next/font/google";
+import { Anton, Inter, JetBrains_Mono } from "next/font/google"; //Fraunces ${fraunces.variable}
 import "./globals.css";
 
-const fraunces = Fraunces({
-  variable: "--font-display",
+const anton = Anton({
+  weight: "400",
   subsets: ["latin"],
-  axes: ["opsz", "SOFT", "WONK"],
-  weight: "variable",
-  style: ["normal", "italic"],
-  display: "swap",
+  variable: "--font-display",
 });
+
+// const fraunces = Fraunces({
+//   variable: "--font-display",
+//   subsets: ["latin"],
+//   axes: ["opsz", "SOFT", "WONK"],
+//   weight: "variable",
+//   style: ["normal", "italic"],
+//   display: "swap",
+// });
 
 const inter = Inter({
   variable: "--font-body",
@@ -55,7 +61,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full" suppressHydrationWarning>
       <body
-        className={`${fraunces.variable} ${inter.variable} ${jbMono.variable} h-full antialiased bg-ink text-bone selection:bg-amber selection:text-ink overflow-x-hidden`}
+        className={`${anton.variable} ${inter.variable} ${jbMono.variable} h-full antialiased bg-ink text-bone selection:bg-amber selection:text-ink overflow-x-hidden`}
       >
         {children}
       </body>

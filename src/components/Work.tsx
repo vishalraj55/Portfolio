@@ -139,7 +139,7 @@ export default function Work() {
             {String(total).padStart(2, "0")}
           </p>
           <h2 className="font-display text-display-1 text-bone">
-            Shipped, <span className="italic text-bone-dim">not</span>
+            Shipped, <span className=" text-bone-dim">not</span>
             <br />
             staged.
           </h2>

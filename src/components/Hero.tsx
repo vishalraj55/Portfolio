@@ -103,7 +103,7 @@ export default function Hero() {
           <span className="block overflow-hidden pb-[0.15em] mb-[-0.15em]">
             <motion.span
               variants={rise}
-              className="block italic text-transparent [-webkit-text-stroke:1.5px_var(--color-bone)] sm:[-webkit-text-stroke:2px_var(--color-bone)]"
+              className="block text-transparent [-webkit-text-stroke:1.5px_var(--color-bone)] sm:[-webkit-text-stroke:2px_var(--color-bone)]"
             >
               RAJBHAR
               <span className="text-amber [-webkit-text-stroke:0px] not-italic">

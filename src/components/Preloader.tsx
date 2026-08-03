@@ -5,11 +5,7 @@ import { gsap } from "gsap";
 
 const COLUMN_COUNT = 5;
 
-export default function Preloader({
-  onDone,
-}: {
-  onDone: () => void;
-}) {
+export default function Preloader({ onDone }: { onDone: () => void }) {
   const [pct, setPct] = useState(0);
 
   const labelRef = useRef<HTMLDivElement>(null);
@@ -18,7 +14,7 @@ export default function Preloader({
 
   useEffect(() => {
     const reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
+      "(prefers-reduced-motion: reduce)",
     ).matches;
 
     if (reduceMotion) {
@@ -40,6 +36,7 @@ export default function Preloader({
       onComplete: () => {
         if (doneRef.current) return;
         doneRef.current = true;
+        const panels = [...colsRef.current].reverse(); 
 
         const tl = gsap.timeline({
           delay: 0.15,
@@ -50,49 +47,21 @@ export default function Preloader({
         tl.to(labelRef.current, {
           y: -40,
           opacity: 0,
-          duration: 0.45,
+          duration: 0.4,
           ease: "power3.out",
         });
 
         // Center panel
         tl.to(
-          colsRef.current[2],
+          panels,
           {
             yPercent: -100,
-            rotation: -1.5,
-            duration: 0.9,
+            duration: 1.1,
             ease: "power4.inOut",
+            stagger: 0.06,
             transformOrigin: "center center",
           },
-          "-=0.1"
-        );
-
-        // Left + Right adjacent
-        tl.to(
-          [colsRef.current[1], colsRef.current[3]],
-          {
-            yPercent: -100,
-            rotation: (i) => (i === 0 ? -1 : 1),
-            duration: 0.95,
-            ease: "power4.inOut",
-            stagger: 0.08,
-            transformOrigin: "center center",
-          },
-          "-=0.65"
-        );
-
-        // Outer panels
-        tl.to(
-          [colsRef.current[0], colsRef.current[4]],
-          {
-            yPercent: -100,
-            rotation: (i) => (i === 0 ? -2 : 2),
-            duration: 1,
-            ease: "power4.inOut",
-            stagger: 0.08,
-            transformOrigin: "center center",
-          },
-          "-=0.72"
+          "-=0.25",
         );
       },
     });
@@ -110,10 +79,8 @@ export default function Preloader({
           ref={(el) => {
             colsRef.current[i] = el;
           }}
-          className="relative flex-1 h-full bg-ink overflow-hidden"
-        >
-          <div className="absolute inset-y-0 right-0 w-px bg-line-soft" />
-        </div>
+          className="relative flex-1 h-full bg-ink"
+        />
       ))}
 
       <div
