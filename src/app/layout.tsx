@@ -71,7 +71,7 @@ const personJsonLd = {
   ],
   jobTitle: "Full Stack Developer",
 };
-<meta name="google-site-verification" content="kZxK-cJzGzsn57WfFTTFeAi8wk7XKjcZWyqG7dNyEz8" />
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -80,6 +80,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full" suppressHydrationWarning>
       <head>
+        <meta name="google-site-verification" content="kZxK-cJzGzsn57WfFTTFeAi8wk7XKjcZWyqG7dNyEz8" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
