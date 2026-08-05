@@ -63,7 +63,7 @@ export const viewport: Viewport = {
 const personJsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
-  name: "YOUR_FULL_NAME",
+  name: "Vishal rajbhar",
   url: "https://vishalrajbhar.vercel.app",
   sameAs: [
     "https://github.com/vishalraj55",
@@ -71,7 +71,7 @@ const personJsonLd = {
   ],
   jobTitle: "Full Stack Developer",
 };
-
+<meta name="google-site-verification" content="kZxK-cJzGzsn57WfFTTFeAi8wk7XKjcZWyqG7dNyEz8" />
 export default function RootLayout({
   children,
 }: Readonly<{
