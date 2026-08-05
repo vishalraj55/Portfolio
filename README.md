@@ -71,5 +71,5 @@ npm start
 
 ## Connect
 
-- Portfolio: [vishal.vercel.app](https://vishalrajbhar.vercel.app)
+- Portfolio: [vishalrajbhar.vercel.app](https://vishalrajbhar.vercel.app)
 - GitHub: [@vishalraj55](https://github.com/vishalraj55)
