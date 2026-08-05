@@ -1,6 +1,6 @@
 # Vishal Rajbhar - Portfolio
 
-🔗 **Live:** [vishal.vercel.app](https://vishalrajbhar.vercel.app)
+🔗 **Live:** [vishalrajbhar.vercel.app](https://vishalrajbhar.vercel.app)
 
 Cinematic dark portfolio for **Vishal Rajbhar**, a full-stack developer. Built with Next.js 16 (App Router), TypeScript, Tailwind v4, GSAP/ScrollTrigger, Lenis, and Framer Motion.
 
