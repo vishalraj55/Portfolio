@@ -32,25 +32,44 @@ const jbMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Vishal Rajbhar",
+  title: "Vishal rajbhar | Full Stack Developer",
   description:
-    "Vishal Rajbhar is a full-stack developer building fast, focused software - Next.js, NestJS, PostgreSQL. Shipped: HTTPilot, Frameloop, CineVoxa, LinguaFlow.",
+    "Vishal rajbhar is a full-stack developer building fast, focused software - Next.js, NestJS, PostgreSQL. Shipped: HTTPilot, Frameloop, CineVoxa, LinguaFlow.",
   metadataBase: new URL("https://vishalrajbhar.vercel.app"),
   icons: {
     icon: "/img/logo.png",
   },
   openGraph: {
-    title: "Vishal Rajbhar",
+    title: "Vishal rajbhar | Full Stack Developer",
     description:
       "Full-stack developer building fast, focused software. Four shipped products, one reel.",
+    url: "https://vishalrajbhar.vercel.app",
+    siteName: "Vishal rajbhar",
     type: "website",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Vishal rajbhar | Full Stack Developer",
+  },
+  alternates: { canonical: "https://vishalrajbhar.vercel.app" },
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   themeColor: "#0a0a0c",
+};
+
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "YOUR_FULL_NAME",
+  url: "https://vishalrajbhar.vercel.app",
+  sameAs: [
+    "https://github.com/vishalraj55",
+    "https://linkedin.com/in/vishalraj55",
+  ],
+  jobTitle: "Full Stack Developer",
 };
 
 export default function RootLayout({
@@ -60,6 +79,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full" suppressHydrationWarning>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+        />
+      </head>
       <body
         className={`${anton.variable} ${inter.variable} ${jbMono.variable} h-full antialiased bg-ink text-bone selection:bg-amber selection:text-ink overflow-x-hidden`}
       >
