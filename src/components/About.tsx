@@ -7,8 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const MARQUEE_TEXT_1 = "SOFTWARE-DEVELOPER ✦ DESIGNER ✦ BUILDER   ";
-const MARQUEE_TEXT_2 = "SHIPPED ✦ DEBUGGED ✦ DEPLOYED ✦ ";
+const MARQUEE_TEXT = "CREATING PRODUCTS ✦ SOLVING PROBLEMS ✦ SHIPPING IDEAS ✦ ";
 
 export default function About() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -100,71 +99,38 @@ export default function About() {
       ref={sectionRef}
       className="relative overflow-hidden border-t border-line section-bg-about pt-15 pb-35 px-6 md:px-10 lg:px-16"
     >
-      {/* diagonal background marquee */}
-      <div
-        className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none select-none"
-        aria-hidden="true"
-        style={{
-          maskImage:
-            "linear-gradient(90deg, transparent, black 15%, black 85%, transparent)",
-          WebkitMaskImage:
-            "linear-gradient(90deg, transparent, black 15%, black 85%, transparent)",
-        }}
-      >
-        <div className="w-[220%] flex" style={{ transform: "rotate(-10deg)" }}>
-          <div
-            ref={marqueeTrackRef}
-            className="flex whitespace-nowrap will-change-transform"
-          >
-            {[0, 1].map((half) => (
-              <div key={half} className="flex items-center gap-[0.35em]">
-                {Array.from({ length: 4 }).map((_, i) => (
-                  <span
-                    key={i}
-                    className="flex items-center gap-[0.35em] font-display font-bold text-[clamp(4rem,14vw,11rem)] leading-none uppercase tracking-tight"
-                  >
-                    <span
-                      className={i % 2 === 0 ? "text-bone/5" : "text-amber/8"}
-                    >
-                      {MARQUEE_TEXT_1.trim()}
-                    </span>
-                    <span className="text-amber/10">✦</span>
-                  </span>
-                ))}
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* curved background marquee */}
+      {/*  background marquee */}
       <div
         className="absolute inset-0 z-0 pointer-events-none select-none"
         aria-hidden="true"
       >
         <svg
-          viewBox="0 0 1920 1080"
           preserveAspectRatio="xMidYMid slice"
           className="w-full h-full"
         >
           <defs>
             <path
               id="about-curve"
-              d="M -300 150 Q 960 420 2220 700"
+              d="
+          M -200 220
+          C 120 120, 280 650, 620 540
+          S 1180 120, 1560 480
+          S 2050 900, 2250 700
+        "
               fill="none"
             />
           </defs>
           <text
-            className="font-display font-bold uppercase tracking-tight"
-            style={{ fill: "var(--color-bone)", fillOpacity: 0.05 }}
-            fontSize="150"
+            className="font-display tracking-tight"
+            style={{ fill: "var(--color-bone)", fillOpacity: 0.1 }}
+            fontSize="100"
           >
             <textPath
               ref={curveTextPathRef}
               href="#about-curve"
               startOffset="0%"
             >
-              {MARQUEE_TEXT_2.repeat(8)}
+              {MARQUEE_TEXT.repeat(8)}
             </textPath>
           </text>
         </svg>
