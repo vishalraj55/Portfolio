@@ -94,9 +94,12 @@ export default function Hero() {
           </p>
         </motion.div>
 
-        <h1 className="font-display text-hero text-bone ml-[-0.02em] mt-1">
-          <span className="block overflow-hidden">
-            <motion.span variants={rise} className="block">
+        <h1
+          className="font-display text-hero text-bone ml-[-0.02em] mt-1 w-fit"
+          data-cursor="My name"
+        >
+          <span className="block overflow-hidden w-fit">
+            <motion.span variants={rise} className="block w-fit">
               VISHAL
             </motion.span>
           </span>
@@ -123,9 +126,8 @@ export default function Hero() {
           className="md:col-span-6 md:col-start-7 lg:col-span-5 lg:col-start-8 text-lead text-bone-dim md:text-right"
           data-cursor="Something about me"
         >
-          I build fast, focused software full-stack, from a Postgres schema to
-          the pixel that ships. Four products shipped, three production
-          incidents survived and documented.
+          Curious enough to explore. Disciplined enough to ship. Four products
+          launched. Countless lessons learned.
         </motion.p>
       </div>
 
