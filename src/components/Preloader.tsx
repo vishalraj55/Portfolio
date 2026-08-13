@@ -88,7 +88,7 @@ export default function Preloader({ onDone }: { onDone: () => void }) {
         className="absolute inset-0 flex flex-col justify-between px-6 py-8 text-bone"
       >
         <div className="flex items-center justify-between text-label uppercase text-muted">
-          <span>Vishal Rajbhar - Reel</span>
+          <span>Vishal Rajbhar</span>
           <span>Loading</span>
         </div>
 

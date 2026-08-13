@@ -152,6 +152,7 @@ export default function About() {
         >
           {/* Chill bear sticker */}
           <div
+          data-cursor="Chill Guy"
             className="about-doodle absolute z-20"
             style={{ left: "40%", top: "1%", width: "50%", height: "40%" }}
           >
@@ -170,6 +171,7 @@ export default function About() {
             style={{ left: "-35%", top: "-2%", width: "50%", height: "40%" }}
           >
             <div
+            data-cursor="Random png"
               className="relative"
               style={{
                 width: "100%",
@@ -194,6 +196,7 @@ export default function About() {
           >
             <div
               ref={photoRef}
+              data-cursor="Vishal Rajbhar"
               className="relative shadow-2xl"
               style={{
                 transform: "rotate(-6deg)",
@@ -218,6 +221,7 @@ export default function About() {
           >
             <div
               className="relative"
+              data-cursor="Felt Cool"
               style={{
                 width: "100%",
                 height: "100%",
@@ -237,14 +241,15 @@ export default function About() {
           {/* Bow */}
           <div
             className="about-doodle absolute z-20 flex items-center justify-center"
-            style={{ left: "30%", top: "58%", width: "100%", height: "25%" }}
+            style={{ left: "50%", top: "58%", width: "50%", height: "25%" }}
           >
             <div
               className="relative"
+              data-cursor="IDK why i put it"
               style={{
                 width: "100%",
                 height: "100%",
-                transform: "rotate(-40deg)",
+                transform: "rotate(-50deg)",
               }}
             >
               <Image
@@ -264,6 +269,7 @@ export default function About() {
           >
             <div
               className="relative"
+              data-cursor="Random png"
               style={{
                 width: "100%",
                 height: "100%",

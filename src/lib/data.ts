@@ -69,27 +69,6 @@ export const projects: Project[] = [
   },
 ];
 
-export const incidents = [
-  {
-    label: "Incident 001",
-    title: "Atlas IP whitelist expiry",
-    detail:
-      "A production 500 traced back to an expired MongoDB Atlas IP whitelist entry - fixed and documented so it couldn't happen twice.",
-  },
-  {
-    label: "Incident 002",
-    title: "Auth-guard header drop",
-    detail:
-      "A multi-layer auth-guard and proxy setup was silently dropping the Authorization header. Traced through three layers to the fix.",
-  },
-  {
-    label: "Incident 003",
-    title: "Node memory leak",
-    detail:
-      "A slow memory leak in a long-running Node process, isolated and resolved through process configuration, not just a restart cron.",
-  },
-];
-
 export const skills = {
   core: ["Next.js", "React", "TypeScript", "NestJS", "Node.js","Python","JavaScript"],
   data: ["PostgreSQL", "Prisma", "Neon", "MongoDB"],

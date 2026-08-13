@@ -53,8 +53,8 @@ export default function Contact() {
     target: sectionRef,
     offset: ["start end", "end start"],
   });
-  const bgY = useTransform(scrollYProgress, [0, 1], ["-32%", "32%"]);
-  const bgScale = useTransform(scrollYProgress, [0, 1], [1.35, 1.05]);
+  const bgY = useTransform(scrollYProgress, [0, 1], ["-15%", "15%"]);
+  const bgScale = useTransform(scrollYProgress, [0, 1], [1.2, 1.05]);
 
   function handleMove(e: React.MouseEvent<HTMLAnchorElement>) {
     const el = linkRef.current;
@@ -77,9 +77,9 @@ export default function Contact() {
     <section
       ref={sectionRef}
       id="contact"
-      className="relative overflow-hidden min-h-screen flex flex-col justify-between bg-black text-white"
+      className="relative overflow-hidden min-h-screen flex flex-col bg-black text-white"
     >
-      {/* Parallax background image */}
+      {/* background image */}
       <motion.div
         className="absolute inset-0 z-0"
         style={{ y: bgY, scale: bgScale }}
@@ -88,7 +88,7 @@ export default function Contact() {
           src="/img/contact.jpg"
           alt=""
           fill
-          className="w-full h-[160%] object-cover grayscale contrast-125"
+          className="w-full h-[140%] object-cover grayscale contrast-125"
         />
         <motion.div
           className="absolute inset-0 bg-linear-to-r from-black/10 via-black/40 to-white/60"
@@ -101,7 +101,7 @@ export default function Contact() {
       </motion.div>
 
       {/* Top row: label + socials */}
-      <div className="relative z-10 gutter flex items-center justify-between pt-8 sm:pt-10 text-xs sm:text-sm uppercase tracking-wider">
+      <div className="relative z-10 gutter flex items-center justify-between pt-6 sm:pt-10 text-[10px] sm:text-sm uppercase tracking-wider">
         <motion.span
           initial={{ opacity: 0, y: -10 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -117,7 +117,7 @@ export default function Contact() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.4 }}
           transition={{ duration: 0.7, delay: 0.1, ease }}
-          className="flex items-center gap-2 sm:gap-3"
+          className="flex items-center gap-1.5 sm:gap-3"
         >
           {SOCIALS.map((s) => (
             <a
@@ -128,7 +128,7 @@ export default function Contact() {
                 s.href.startsWith("http") ? "noopener noreferrer" : undefined
               }
               aria-label={s.label}
-              className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-white/25 flex items-center justify-center hover:bg-white hover:text-black hover:border-white transition-colors duration-300"
+              className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border border-white/25 flex items-center justify-center hover:bg-white hover:text-black hover:border-white transition-colors duration-300 shrink-0"
             >
               {s.icon}
             </a>
@@ -137,11 +137,11 @@ export default function Contact() {
       </div>
 
       {/* Headline */}
-      <div className="relative z-10 gutter flex-1 flex flex-col justify-center items-center gap-0">
-        <h1 className="font-display uppercase leading-[0.9] tracking-tight text-[clamp(3rem,3rem+7vw,50rem)] text-center">
+      <div className="relative z-10 flex-1 flex flex-col justify-center items-center py-8 sm:py-0">
+        <h1 className="font-display uppercase leading-[0.95] sm:leading-[0.9] tracking-tight text-center">
           <motion.span
-            className="block text-[15vw] sm:text-[13vw]"
-            initial={{ opacity: 0, y: 60 }}
+            className="block text-[22vw] sm:text-[18vw]"
+            initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.4 }}
             transition={{ duration: 0.9, ease }}
@@ -149,8 +149,8 @@ export default function Contact() {
             Let&apos;s build
           </motion.span>
           <motion.span
-            className="block text-[15vw] sm:text-[13vw]"
-            initial={{ opacity: 0, y: 60 }}
+            className="block text-[17vw] sm:text-[13vw]"
+            initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.4 }}
             transition={{ duration: 0.9, delay: 0.1, ease }}
@@ -158,8 +158,8 @@ export default function Contact() {
             an experience
           </motion.span>
           <motion.span
-            className="block text-[15vw] sm:text-[13vw]"
-            initial={{ opacity: 0, y: 60 }}
+            className="block text-[22vw] sm:text-[18vw]"
+            initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.4 }}
             transition={{ duration: 0.9, delay: 0.2, ease }}
@@ -167,8 +167,8 @@ export default function Contact() {
             that moves
           </motion.span>
           <motion.span
-            className="block text-[15vw] sm:text-[13vw]"
-            initial={{ opacity: 0, y: 60 }}
+            className="block text-[14vw] sm:text-[10vw]"
+            initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.4 }}
             transition={{ duration: 0.9, delay: 0.3, ease }}
@@ -179,7 +179,7 @@ export default function Contact() {
       </div>
 
       {/* Bottom row */}
-      <div className="relative z-10 gutter pb-8 sm:pb-10 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
+      <div className="relative z-10 gutter pb-6 sm:pb-10 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5 sm:gap-6">
         <motion.a
           ref={linkRef}
           href="mailto:vishalraj2487@gmail.com"
@@ -191,18 +191,20 @@ export default function Contact() {
           transition={{ duration: 0.8, delay: 0.4, ease }}
           whileHover={{ scale: 1.04 }}
           whileTap={{ scale: 0.97 }}
-          className="group inline-flex items-center gap-4 bg-white text-black rounded-full pl-8 pr-3 py-4 transition-transform duration-300 ease-out self-start sm:self-auto"
+          className="group inline-flex items-center gap-3 sm:gap-4 bg-white text-black rounded-full pl-6 pr-2 py-2.5 sm:pl-8 sm:pr-3 sm:py-4 transition-transform duration-300 ease-out w-full sm:w-auto justify-between sm:justify-start"
         >
-          <span className="font-display text-2xl sm:text-3xl">Contact me</span>
+          <span className="font-display text-lg sm:text-3xl whitespace-nowrap">
+            Contact me
+          </span>
           <motion.span
-            className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black grid place-items-center shrink-0"
+            className="w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-black grid place-items-center shrink-0"
             animate={{ rotate: 0 }}
             whileHover={{ rotate: 45 }}
             transition={{ duration: 0.3, ease }}
           >
             <svg
               viewBox="0 0 24 24"
-              className="w-4 h-4 sm:w-5 sm:h-5 fill-none stroke-white"
+              className="w-3.5 h-3.5 sm:w-5 sm:h-5 fill-none stroke-white"
               strokeWidth="2"
             >
               <path
@@ -219,7 +221,7 @@ export default function Contact() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.4 }}
           transition={{ duration: 0.8, delay: 0.5, ease }}
-          className="flex flex-col items-start sm:items-end gap-1 text-xs sm:text-sm uppercase tracking-wider text-white/60"
+          className="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-1 text-[10px] sm:text-sm uppercase tracking-wider text-white/60 w-full sm:w-auto"
         >
           <span>Vishal Rajbhar</span>
           <span>Mumbai, India</span>

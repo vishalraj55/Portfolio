@@ -4,10 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 
 const LINKS = [
-  { href: "#work", label: "Reel" },
-  { href: "#about", label: "Cut" },
-  { href: "#skills", label: "Kit" },
-  { href: "#contact", label: "Contact" },
+  { href: "#work", label: "Reel", cursor: "Work" },
+  { href: "#about", label: "Cut", cursor: "About Me" },
+  { href: "#skills", label: "Kit", cursor: "My Skills" },
+  { href: "#contact", label: "Contact", cursor: "Get in Touch" },
 ];
 
 export default function Nav() {
@@ -59,7 +59,7 @@ export default function Nav() {
         duration: 0.5,
         ease: "power4.out",
       },
-      "-=0.42"
+      "-=0.42",
     );
 
     tl.to(
@@ -71,7 +71,7 @@ export default function Nav() {
         ease: "power3.out",
         stagger: 0.07,
       },
-      "-=0.25"
+      "-=0.25",
     );
 
     tlRef.current = tl;
@@ -100,13 +100,13 @@ export default function Nav() {
         }`}
       >
         <nav className="flex items-center justify-between">
-          
-<a
-  href="#hero"
-  className="relative z-50 font-display italic text-lg sm:text-xl tracking-tight text-bone"
->
-  VR<span className="text-amber not-italic">.</span>
-</a>
+          <a
+            href="#hero"
+            className="relative z-50 font-display italic text-lg sm:text-xl tracking-tight text-bone"
+          data-cursor="logo"
+          >
+            VR<span className="text-amber not-italic">.</span>
+          </a>
 
           <ul className="hidden md:flex items-center gap-9">
             {LINKS.map((l, i) => (
@@ -116,6 +116,7 @@ export default function Nav() {
                 </span>
                 <a
                   href={l.href}
+                  data-cursor={l.cursor}
                   className="text-label uppercase text-bone-dim hover:text-amber transition-colors duration-300"
                 >
                   {l.label}
@@ -127,6 +128,7 @@ export default function Nav() {
           <a
             href="#contact"
             className="hidden md:inline-flex items-center gap-2 text-label uppercase border border-line rounded-full px-4 py-2 text-bone hover:border-amber hover:text-amber transition-colors duration-300"
+            data-cursor="Hire me 😋"
           >
             Available for hire
             <span className="w-1.5 h-1.5 rounded-full bg-amber animate-pulse" />

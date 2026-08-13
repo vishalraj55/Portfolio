@@ -165,7 +165,7 @@ export default function Skills() {
             <span className="w-4 h-px bg-amber" />
             04 - The Kit
           </p>
-          <h2 className="font-display text-display-2 text-bone mb-5">
+          <h2 className="font-display text-display-2 text-bone mb-5" data-cursor="The bag is big">
             What&rsquo;s in the bag.
           </h2>
           <p className="text-body-fluid text-muted max-w-md mb-8">
