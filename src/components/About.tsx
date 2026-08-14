@@ -17,7 +17,7 @@ export default function About() {
   const photoMobileRef = useRef<HTMLDivElement>(null);
   const marqueeTrackRef = useRef<HTMLDivElement>(null);
   const curveTextPathRef = useRef<SVGTextPathElement>(null);
-
+  const curveTextPathMobileRef = useRef<SVGTextPathElement>(null);
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.fromTo(
@@ -76,18 +76,21 @@ export default function About() {
       }
 
       // curved background marquee - opposite diagonal
-      if (curveTextPathRef.current) {
-        gsap.fromTo(
-          curveTextPathRef.current,
-          { attr: { startOffset: "0%" } },
-          {
-            attr: { startOffset: "-100%" },
-            ease: "none",
-            duration: 26,
-            repeat: -1,
-          },
-        );
-      }
+      [curveTextPathRef.current, curveTextPathMobileRef.current].forEach(
+        (el) => {
+          if (!el) return;
+          gsap.fromTo(
+            el,
+            { attr: { startOffset: "0%" } },
+            {
+              attr: { startOffset: "-100%" },
+              ease: "none",
+              duration: 26,
+              repeat: -1,
+            },
+          );
+        },
+      );
     }, sectionRef);
 
     return () => ctx.revert();
@@ -97,17 +100,14 @@ export default function About() {
     <section
       id="about"
       ref={sectionRef}
-      className="relative overflow-hidden border-t border-line section-bg-about pt-15 pb-35 px-6 md:px-10 lg:px-16"
+      className="relative overflow-hidden border-t border-line section-bg-about pt-15 pb-5 md:pb-35 px-6 md:px-10 lg:px-16"
     >
       {/*  background marquee */}
       <div
-        className="absolute inset-0 z-0 pointer-events-none select-none"
+        className="absolute inset-0 z-0 pointer-events-none select-none hidden md:block "
         aria-hidden="true"
       >
-        <svg
-          preserveAspectRatio="xMidYMid slice"
-          className="w-full h-full"
-        >
+        <svg preserveAspectRatio="xMidYMid slice" className="w-full h-full">
           <defs>
             <path
               id="about-curve"
@@ -152,7 +152,7 @@ export default function About() {
         >
           {/* Chill bear sticker */}
           <div
-          data-cursor="Chill Guy"
+            data-cursor="Chill Guy"
             className="about-doodle absolute z-20"
             style={{ left: "40%", top: "1%", width: "50%", height: "40%" }}
           >
@@ -171,7 +171,7 @@ export default function About() {
             style={{ left: "-35%", top: "-2%", width: "50%", height: "40%" }}
           >
             <div
-            data-cursor="Random png"
+              data-cursor="Random png"
               className="relative"
               style={{
                 width: "100%",
@@ -324,6 +324,41 @@ export default function About() {
 
       {/* MOBILE LAYOUT */}
       <div className="relative z-10 md:hidden">
+        {/* MOBILE background marquee */}
+        <div
+          className="absolute inset-0 z-0 pointer-events-none select-none overflow-hidden"
+          aria-hidden="true"
+        >
+          <svg
+            viewBox="0 0 400 100"
+            preserveAspectRatio="None"
+            className="w-full h-full"
+          >
+            <defs>
+              <path
+                id="about-curve-mobile"
+                d="
+                    M -50 100
+                    C 100 220, 300 180, 450 140
+                  "
+                fill="none"
+              />
+            </defs>
+            <text
+              className="font-display tracking-tight"
+              style={{ fill: "var(--color-bone)", fillOpacity: 0.5 }}
+              fontSize="25"
+            >
+              <textPath
+                ref={curveTextPathMobileRef}
+                href="#about-curve-mobile"
+                startOffset="0%"
+              >
+                {MARQUEE_TEXT.repeat(8)}
+              </textPath>
+            </text>
+          </svg>
+        </div>
         <div className="relative w-[min(300px,98vw)] mx-auto">
           <div className="about-doodle absolute -top-2 left-0 z-20"></div>
 
