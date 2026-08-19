@@ -3,6 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 
+const BANNER_OFFSET_X = 20;
+const BANNER_OFFSET_Y = 26;
+const EDGE_PADDING = 12;
+
 export default function CustomCursor() {
   const cursorRef = useRef<HTMLDivElement>(null);
   const bannerRef = useRef<HTMLDivElement>(null);
@@ -38,11 +42,33 @@ export default function CustomCursor() {
       ease: "power3.out",
     });
 
+    function getBannerPosition(clientX: number, clientY: number) {
+      const rect = banner!.getBoundingClientRect();
+      const w = rect.width || banner!.offsetWidth;
+      const h = rect.height || banner!.offsetHeight;
+
+      let x = clientX + BANNER_OFFSET_X;
+      let y = clientY + BANNER_OFFSET_Y;
+
+      if (x + w + EDGE_PADDING > window.innerWidth) {
+        x = clientX - w - BANNER_OFFSET_X;
+      }
+      if (y + h + EDGE_PADDING > window.innerHeight) {
+        y = clientY - h - (BANNER_OFFSET_Y - 10);
+      }
+
+      x = Math.max(EDGE_PADDING, x);
+      y = Math.max(EDGE_PADDING, y);
+
+      return { x, y };
+    }
+
     const move = (e: MouseEvent) => {
       cx(e.clientX);
       cy(e.clientY);
-      bx(e.clientX + 20);
-      by(e.clientY + 26);
+      const { x, y } = getBannerPosition(e.clientX, e.clientY);
+      bx(x);
+      by(y);
     };
     window.addEventListener("mousemove", move);
 
@@ -71,11 +97,24 @@ export default function CustomCursor() {
 
     document.addEventListener("mouseover", onOver);
     document.addEventListener("mouseout", onOut);
+    const html = document.documentElement;
+    const onWindowLeave = () => {
+      setHovering(false);
+      gsap.to(cursor, { opacity: 0, duration: 0.15, ease: "power2.out" });
+      gsap.to(banner, { opacity: 0, duration: 0.15, ease: "power2.out" });
+    };
+    const onWindowEnter = () => {
+      gsap.to(cursor, { opacity: 1, duration: 0.15, ease: "power2.out" });
+    };
+    html.addEventListener("mouseleave", onWindowLeave);
+    html.addEventListener("mouseenter", onWindowEnter);
 
     return () => {
       window.removeEventListener("mousemove", move);
       document.removeEventListener("mouseover", onOver);
       document.removeEventListener("mouseout", onOut);
+      html.removeEventListener("mouseleave", onWindowLeave);
+      html.removeEventListener("mouseenter", onWindowEnter);
     };
   }, [isTouch]);
 

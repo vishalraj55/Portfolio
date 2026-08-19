@@ -12,6 +12,7 @@ import About from "@/components/About";
 import Skills from "@/components/Skills";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
+import ChatBot from "@/components/ChatBot";
 import CustomCursor from "@/components/CustomCursor";
 
 export default function Home() {
@@ -22,6 +23,7 @@ export default function Home() {
       {loading && <Preloader onDone={() => setLoading(false)} />}
       <Grain />
       <CustomCursor />
+      <ChatBot />
       <Nav />
       <SmoothScroll>
         <main>

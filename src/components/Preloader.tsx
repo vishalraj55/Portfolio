@@ -4,6 +4,12 @@ import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 
 const COLUMN_COUNT = 5;
+const MIN_DISPLAY_MS = 500;
+const CREEP_TIME_CONSTANT = 900;
+
+function delay(ms: number) {
+  return new Promise<void>((resolve) => setTimeout(resolve, ms));
+}
 
 export default function Preloader({ onDone }: { onDone: () => void }) {
   const [pct, setPct] = useState(0);
@@ -22,52 +28,78 @@ export default function Preloader({ onDone }: { onDone: () => void }) {
       return;
     }
 
+    let finished = false;
+    let rafId: number;
     const obj = { value: 0 };
+    const startTime = performance.now();
+    function tick() {
+      if (finished) return;
+      const elapsed = performance.now() - startTime;
+      obj.value = 90 * (1 - Math.exp(-elapsed / CREEP_TIME_CONSTANT));
+      setPct(Math.floor(obj.value));
+      rafId = requestAnimationFrame(tick);
+    }
+    rafId = requestAnimationFrame(tick);
+    const loadPromise =
+      document.readyState === "complete"
+        ? Promise.resolve()
+        : new Promise<void>((resolve) =>
+            window.addEventListener("load", () => resolve(), {
+              once: true,
+            }),
+          );
+    const fontsPromise = document.fonts
+      ? document.fonts.ready
+      : Promise.resolve();
 
-    const tween = gsap.to(obj, {
-      value: 100,
-      duration: 1.6,
-      ease: "power2.inOut",
-
-      onUpdate: () => {
-        setPct(Math.floor(obj.value));
-      },
-
-      onComplete: () => {
-        if (doneRef.current) return;
-        doneRef.current = true;
-        const panels = [...colsRef.current].reverse(); 
-
-        const tl = gsap.timeline({
-          delay: 0.15,
-          onComplete: onDone,
-        });
-
-        // Fade the loading UI
-        tl.to(labelRef.current, {
-          y: -40,
-          opacity: 0,
-          duration: 0.4,
-          ease: "power3.out",
-        });
-
-        // Center panel
-        tl.to(
-          panels,
-          {
-            yPercent: -100,
-            duration: 1.1,
-            ease: "power4.inOut",
-            stagger: 0.06,
-            transformOrigin: "center center",
-          },
-          "-=0.25",
-        );
-      },
+    Promise.all([loadPromise, fontsPromise, delay(MIN_DISPLAY_MS)]).then(() => {
+      if (finished) return;
+      finished = true;
+      cancelAnimationFrame(rafId);
+      playExit(obj);
     });
 
+    function playExit(progressObj: { value: number }) {
+      gsap.to(progressObj, {
+        value: 100,
+        duration: 0.35,
+        ease: "power2.out",
+        onUpdate: () => setPct(Math.floor(progressObj.value)),
+        onComplete: () => {
+          if (doneRef.current) return;
+          doneRef.current = true;
+          const panels = [...colsRef.current].reverse();
+
+          const tl = gsap.timeline({
+            delay: 0.15,
+            onComplete: onDone,
+          });
+
+          tl.to(labelRef.current, {
+            y: -40,
+            opacity: 0,
+            duration: 0.4,
+            ease: "power3.out",
+          });
+
+          tl.to(
+            panels,
+            {
+              yPercent: -100,
+              duration: 1.1,
+              ease: "power4.inOut",
+              stagger: 0.06,
+              transformOrigin: "center center",
+            },
+            "-=0.25",
+          );
+        },
+      });
+    }
+
     return () => {
-      tween.kill();
+      finished = true;
+      cancelAnimationFrame(rafId);
     };
   }, [onDone]);
 

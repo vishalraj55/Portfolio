@@ -14,7 +14,7 @@ export default function Footer() {
         transition={{ duration: 0.8, ease }}
         className="gutter py-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-[10px] sm:text-xs uppercase tracking-wider"
       >
-        <span>© {new Date().getFullYear()} Vishal Rajbhar — end of reel</span>
+        <span>© {new Date().getFullYear()} Vishal Rajbhar - end of reel</span>
         <a
           href="https://github.com/vishalraj55"
           target="_blank"
