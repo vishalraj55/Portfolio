@@ -109,9 +109,6 @@ export default function Hero() {
               className="block text-transparent [-webkit-text-stroke:1.5px_var(--color-bone)] sm:[-webkit-text-stroke:2px_var(--color-bone)]"
             >
               RAJBHAR
-              <span className="text-amber [-webkit-text-stroke:0px] not-italic">
-                .
-              </span>
             </motion.span>
           </span>
         </h1>
