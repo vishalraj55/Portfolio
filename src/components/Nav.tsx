@@ -19,6 +19,22 @@ export default function Nav() {
   const itemsRef = useRef<(HTMLLIElement | null)[]>([]);
   const tlRef = useRef<gsap.core.Timeline | null>(null);
 
+  const [time, setTime] = useState("");
+
+  useEffect(() => {
+    const tick = () =>
+      setTime(
+        new Date().toLocaleTimeString("en-IN", {
+          timeZone: "Asia/Kolkata",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        }),
+      );
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
     onScroll();
@@ -103,7 +119,7 @@ export default function Nav() {
           <a
             href="#hero"
             className="relative z-50 font-display italic text-lg sm:text-xl tracking-tight text-bone"
-          data-cursor="logo"
+            data-cursor="logo"
           >
             VR<span className="text-amber not-italic">.</span>
           </a>
@@ -127,11 +143,10 @@ export default function Nav() {
 
           <a
             href="#contact"
-            className="hidden md:inline-flex items-center gap-2 text-label uppercase border border-line rounded-full px-4 py-2 text-bone hover:border-amber hover:text-amber transition-colors duration-300"
-            data-cursor="Hire me 😋"
+            className="hidden md:inline-flex items-center gap-2 tabular-nums text-label uppercase ..."
+            data-cursor="My local time - India"
           >
-            Available for hire
-            <span className="w-1.5 h-1.5 rounded-full bg-amber animate-pulse" />
+           {time}
           </a>
 
           <button

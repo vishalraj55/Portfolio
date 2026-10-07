@@ -1,232 +1,132 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
-import Image from "next/image";
+import { motion } from "framer-motion";
+
+const EMAIL = "vishalraj2487@gmail.com";
 
 const SOCIALS = [
   {
     label: "GitHub",
     href: "https://github.com/vishalraj55",
-    icon: (
-      <svg
-        viewBox="0 0 24 24"
-        className="w-4 h-4 sm:w-4.5 sm:h-4.5 fill-current"
-      >
-        <path d="M12 .5C5.73.5.75 5.48.75 11.75c0 5.02 3.26 9.27 7.78 10.77.57.1.78-.25.78-.55 0-.27-.01-1.16-.02-2.1-3.17.69-3.84-1.34-3.84-1.34-.52-1.32-1.27-1.67-1.27-1.67-1.04-.71.08-.7.08-.7 1.15.08 1.75 1.18 1.75 1.18 1.02 1.75 2.68 1.24 3.33.95.1-.74.4-1.24.72-1.53-2.53-.29-5.19-1.27-5.19-5.63 0-1.24.44-2.26 1.17-3.06-.12-.29-.51-1.45.11-3.02 0 0 .96-.31 3.15 1.17a10.9 10.9 0 0 1 2.87-.39c.97.01 1.95.13 2.87.39 2.19-1.48 3.15-1.17 3.15-1.17.62 1.57.23 2.73.11 3.02.73.8 1.17 1.82 1.17 3.06 0 4.37-2.66 5.34-5.2 5.62.41.36.77 1.06.77 2.14 0 1.55-.01 2.79-.01 3.17 0 .3.2.66.79.55A11.26 11.26 0 0 0 23.25 11.75C23.25 5.48 18.27.5 12 .5Z" />
-      </svg>
-    ),
+    path: "M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.500 11.500 0 0 1 6 0c2.300-1.500 3.300-1.200 3.300-1.200.7 1.700.2 2.900.1 3.200.8.800 1.200 1.900 1.200 3.200 0 4.600-2.800 5.600-5.500 5.900.4.400.8 1.100.8 2.200v3.300c0 .3.2.7.8.6A12 12 0 0 0 12 .3",
   },
   {
     label: "LinkedIn",
     href: "https://linkedin.com/in/vishalraj55",
-    icon: (
-      <svg
-        viewBox="0 0 24 24"
-        className="w-4 h-4 sm:w-4.5 sm:h-4.5 fill-current"
-      >
-        <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.03-1.85-3.03-1.86 0-2.14 1.45-2.14 2.94v5.66H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.61 0 4.28 2.38 4.28 5.47v6.27ZM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13ZM7.12 20.45H3.56V9h3.56v11.45Z" />
-      </svg>
-    ),
-  },
-  {
-    label: "Email",
-    href: "mailto:vishalraj2487@gmail.com",
-    icon: (
-      <svg
-        viewBox="0 0 24 24"
-        className="w-4 h-4 sm:w-4.5 sm:h-4.5 fill-none stroke-current"
-        strokeWidth="1.8"
-      >
-        <path d="M3 6.5h18v11H3z" strokeLinejoin="round" />
-        <path d="m3 6.5 9 7 9-7" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-    ),
+    path: "M20.400 20.500h-3.600v-5.600c0-1.300 0-3-1.800-3s-2.100 1.400-2.100 2.900v5.700H9.400V9h3.400v1.600c.5-.9 1.600-1.900 3.400-1.900 3.600 0 4.300 2.400 4.300 5.500v6.300zM5.300 7.400a2.100 2.100 0 1 1 0-4.100 2.100 2.100 0 0 1 0 4.100zm1.800 13.100H3.600V9h3.500v11.500zM22.200 0H1.800C.8 0 0 .8 0 1.700v20.600c0 .9.800 1.700 1.800 1.700h20.400c1 0 1.800-.8 1.800-1.700V1.700C24 .8 23.200 0 22.200 0z",
   },
 ];
 
+const ease = [0.16, 1, 0.3, 1] as const;
+
+const reveal = (delay = 0) => ({
+  initial: { opacity: 0, y: 24 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, amount: 0.3 },
+  transition: { duration: 1, delay, ease },
+});
+
+const meta = "text-[10px] leading-snug sm:text-xs text-bone/60";
+
 export default function Contact() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const linkRef = useRef<HTMLAnchorElement>(null);
-
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start end", "end start"],
-  });
-  const bgY = useTransform(scrollYProgress, [0, 1], ["-15%", "15%"]);
-  const bgScale = useTransform(scrollYProgress, [0, 1], [1.2, 1.05]);
-
-  function handleMove(e: React.MouseEvent<HTMLAnchorElement>) {
-    const el = linkRef.current;
-    if (!el || window.matchMedia("(pointer: coarse)").matches) return;
-    const rect = el.getBoundingClientRect();
-    const x = e.clientX - rect.left - rect.width / 2;
-    const y = e.clientY - rect.top - rect.height / 2;
-    el.style.transform = `translate(${x * 0.18}px, ${y * 0.25}px)`;
-  }
-
-  function handleLeave() {
-    const el = linkRef.current;
-    if (!el) return;
-    el.style.transform = "translate(0px, 0px)";
-  }
-
-  const ease = [0.16, 1, 0.3, 1] as const;
-
   return (
     <section
-      ref={sectionRef}
       id="contact"
-      className="relative overflow-hidden min-h-screen flex flex-col bg-black text-white"
+      className="flex min-h-svh flex-col justify-between bg-black p-5 text-bone sm:p-8"
     >
-      {/* background image */}
-      <motion.div
-        className="absolute inset-0 z-0"
-        style={{ y: bgY, scale: bgScale }}
+      {/* Top bar */}
+      <motion.header
+        {...reveal()}
+        className={`grid grid-cols-2 items-start ${meta}`}
       >
-        <Image
-          src="/img/contact.jpg"
-          alt=""
-          fill
-          className="w-full h-[140%] object-cover grayscale contrast-125"
-        />
-        <motion.div
-          className="absolute inset-0 bg-linear-to-r from-black/10 via-black/40 to-white/60"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 1.2, ease }}
-        />
-        <div className="absolute inset-0 bg-black/20" />
-      </motion.div>
-
-      {/* Top row: label + socials */}
-      <div className="relative z-10 gutter flex items-center justify-between pt-6 sm:pt-10 text-[10px] sm:text-sm uppercase tracking-wider">
-        <motion.span
-          initial={{ opacity: 0, y: -10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.7, ease }}
-          className="text-white/60"
-        >
+        <p>
+          Full-Stack Developer
+          <br />
+          Portfolio 2026
+        </p>
+        <p className="text-right">
           Available for work
-        </motion.span>
+          <br />
+          Mumbai, India
+        </p>
+      </motion.header>
 
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.7, delay: 0.1, ease }}
-          className="flex items-center gap-1.5 sm:gap-3"
+      {/* Center */}
+      <div className="flex flex-col items-center py-6 text-center">
+        <motion.h2
+          {...reveal(0.1)}
+          className="relative font-(family-name:--font-display-tall) text-[clamp(4rem,17vw,16rem)] uppercase leading-[0.82] tracking-tight"
         >
-          {SOCIALS.map((s) => (
-            <a
-              key={s.label}
-              href={s.href}
-              target={s.href.startsWith("http") ? "_blank" : undefined}
-              rel={
-                s.href.startsWith("http") ? "noopener noreferrer" : undefined
-              }
-              aria-label={s.label}
-              className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border border-white/25 flex items-center justify-center hover:bg-white hover:text-black hover:border-white transition-colors duration-300 shrink-0"
+          Interested in
+          <br />
+          working together?
+          <span className="pointer-events-none absolute inset-0 flex items-center justify-center">
+            <motion.span
+              className="text-[0.75em] drop-shadow-2xl"
+              animate={{ rotate: [-8, 8, -8], y: [0, -8, 0] }}
+              transition={{ duration: 5, ease: "easeInOut", repeat: Infinity }}
             >
-              {s.icon}
-            </a>
-          ))}
-        </motion.div>
-      </div>
-
-      {/* Headline */}
-      <div className="relative z-10 flex-1 flex flex-col justify-center items-center py-8 sm:py-0">
-        <h1 className="font-display uppercase leading-[0.95] sm:leading-[0.9] tracking-tight text-center">
-          <motion.span
-            className="block text-[22vw] sm:text-[18vw]"
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.4 }}
-            transition={{ duration: 0.9, ease }}
-          >
-            Let&apos;s build
-          </motion.span>
-          <motion.span
-            className="block text-[17vw] sm:text-[13vw]"
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.4 }}
-            transition={{ duration: 0.9, delay: 0.1, ease }}
-          >
-            an experience
-          </motion.span>
-          <motion.span
-            className="block text-[22vw] sm:text-[18vw]"
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.4 }}
-            transition={{ duration: 0.9, delay: 0.2, ease }}
-          >
-            that moves
-          </motion.span>
-          <motion.span
-            className="block text-[14vw] sm:text-[10vw]"
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.4 }}
-            transition={{ duration: 0.9, delay: 0.3, ease }}
-          >
-            people
-          </motion.span>
-        </h1>
-      </div>
-
-      {/* Bottom row */}
-      <div className="relative z-10 gutter pb-6 sm:pb-10 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5 sm:gap-6">
-        <motion.a
-          ref={linkRef}
-          href="mailto:vishalraj2487@gmail.com"
-          onMouseMove={handleMove}
-          onMouseLeave={handleLeave}
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.8, delay: 0.4, ease }}
-          whileHover={{ scale: 1.04 }}
-          whileTap={{ scale: 0.97 }}
-          className="group inline-flex items-center gap-3 sm:gap-4 bg-white text-black rounded-full pl-6 pr-2 py-2.5 sm:pl-8 sm:pr-3 sm:py-4 transition-transform duration-300 ease-out w-full sm:w-auto justify-between sm:justify-start"
-        >
-          <span className="font-display text-lg sm:text-3xl whitespace-nowrap">
-            Contact me
+              ✌🏼
+            </motion.span>
           </span>
-          <motion.span
-            className="w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-black grid place-items-center shrink-0"
-            animate={{ rotate: 0 }}
-            whileHover={{ rotate: 45 }}
-            transition={{ duration: 0.3, ease }}
-          >
-            <svg
-              viewBox="0 0 24 24"
-              className="w-3.5 h-3.5 sm:w-5 sm:h-5 fill-none stroke-white"
-              strokeWidth="2"
-            >
-              <path
-                d="M7 17L17 7M17 7H9M17 7V15"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </motion.span>
-        </motion.a>
+        </motion.h2>
 
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.8, delay: 0.5, ease }}
-          className="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-1 text-[10px] sm:text-sm uppercase tracking-wider text-white/60 w-full sm:w-auto"
-        >
-          <span>Vishal Rajbhar</span>
-          <span>Mumbai, India</span>
+        <motion.div {...reveal(0.25)} className="mt-8 space-y-1">
+          <p className={meta}>Contact me:</p>
+          <a
+            href={`mailto:${EMAIL}`}
+            className="text-xl underline decoration-bone/20 underline-offset-8 transition-colors duration-300 hover:text-amber hover:decoration-amber sm:text-2xl"
+          >
+            {EMAIL}
+          </a>
         </motion.div>
+        <ul className="flex gap-2 pt-4">
+          {SOCIALS.map(({ label, href, path }) => (
+            <li key={label}>
+              <a
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={label}
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-bone/30 transition-colors duration-300 hover:border-amber hover:bg-amber hover:text-black"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                  className="h-4 w-4 fill-current"
+                >
+                  <path d={path} />
+                </svg>
+              </a>
+            </li>
+          ))}
+          <li id="ask-slot" aria-hidden className="h-10 w-10" />
+        </ul>
       </div>
+
+      {/* Bottom bar */}
+      <motion.footer
+        {...reveal(0.3)}
+        className={`flex items-end justify-between gap-4 ${meta}`}
+      >
+        <p>
+          Design &amp; development
+          <br />
+          by Vishal Rajbhar
+        </p>
+
+        <p className="text-right">
+          &copy; {new Date().getFullYear()} · All Rights Reserved
+          <br />
+          <button
+            type="button"
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            className="transition-colors duration-300 hover:text-amber"
+          >
+            Back to top ↑
+          </button>
+        </p>
+      </motion.footer>
     </section>
   );
 }

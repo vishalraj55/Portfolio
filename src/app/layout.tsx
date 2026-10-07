@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Anton, Inter, JetBrains_Mono } from "next/font/google"; //Fraunces ${fraunces.variable}
+import { Anton, League_Gothic, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
 const anton = Anton({
@@ -8,14 +8,12 @@ const anton = Anton({
   variable: "--font-display",
 });
 
-// const fraunces = Fraunces({
-//   variable: "--font-display",
-//   subsets: ["latin"],
-//   axes: ["opsz", "SOFT", "WONK"],
-//   weight: "variable",
-//   style: ["normal", "italic"],
-//   display: "swap",
-// });
+const leagueGothic = League_Gothic({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-display-tall",
+  display: "swap",
+});
 
 const inter = Inter({
   variable: "--font-body",
@@ -80,14 +78,17 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full" suppressHydrationWarning>
       <head>
-        <meta name="google-site-verification" content="kZxK-cJzGzsn57WfFTTFeAi8wk7XKjcZWyqG7dNyEz8" />
+        <meta
+          name="google-site-verification"
+          content="kZxK-cJzGzsn57WfFTTFeAi8wk7XKjcZWyqG7dNyEz8"
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
         />
       </head>
       <body
-        className={`${anton.variable} ${inter.variable} ${jbMono.variable} h-full antialiased bg-ink text-bone selection:bg-amber selection:text-ink overflow-x-hidden`}
+        className={`${anton.variable} ${leagueGothic.variable} ${inter.variable} ${jbMono.variable} h-full antialiased bg-ink text-bone selection:bg-amber selection:text-ink overflow-x-hidden`}
       >
         {children}
       </body>

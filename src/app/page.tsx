@@ -11,7 +11,7 @@ import Work from "@/components/Work";
 import About from "@/components/About";
 import Skills from "@/components/Skills";
 import Contact from "@/components/Contact";
-import Footer from "@/components/Footer";
+// import Footer from "@/components/Footer";
 import ChatBot from "@/components/ChatBot";
 import CustomCursor from "@/components/CustomCursor";
 
@@ -33,7 +33,7 @@ export default function Home() {
           <Skills />
           <Contact />
         </main>
-        <Footer />
+        {/* <Footer /> */}
       </SmoothScroll>
     </>
   );

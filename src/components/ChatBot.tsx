@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useLayoutEffect } from "react";
 import { gsap } from "gsap";
 import Image from "next/image";
+import { motion, useMotionValue } from "framer-motion";
 
 type Message = { role: "user" | "assistant"; content: string };
 
@@ -47,20 +48,61 @@ export default function ChatBot() {
   const intentionalAbortRef = useRef(false);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+    bottomRef.current?.scrollIntoView({
+      behavior: loading ? "auto" : "smooth",
+      block: "end",
+    });
   }, [messages, loading]);
+
+  // Motion values for the launcher position -- docking thing
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  useEffect(() => {
+    const update = () => {
+      const btn = launcherRef.current;
+      const slot = document.getElementById("ask-slot");
+      const section = document.getElementById("contact");
+      if (!btn || !slot || !section) return;
+
+      const t = Math.min(
+        1,
+        Math.max(
+          0,
+          1 - section.getBoundingClientRect().top / window.innerHeight,
+        ),
+      );
+      const s = slot.getBoundingClientRect();
+      const cs = getComputedStyle(btn);
+      const root = document.documentElement;
+
+      const homeX =
+        root.clientWidth - parseFloat(cs.right) - btn.offsetWidth / 2;
+      const homeY =
+        root.clientHeight - parseFloat(cs.bottom) - btn.offsetHeight / 2;
+
+      x.set((s.left + s.width / 2 - homeX) * t);
+      y.set((s.top + s.height / 2 - homeY) * t);
+    };
+
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(document.documentElement);
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, [x, y]);
 
   useLayoutEffect(() => {
     const panel = panelRef.current;
     const launcher = launcherRef.current;
     if (!panel || !launcher) return;
 
-    if (!open) {
-      document.body.style.overflow = "";
-      return;
-    }
-
-    document.body.style.overflow = "hidden";
+    if (!open) return;
 
     const panelRect = panel.getBoundingClientRect();
     const launcherRect = launcher.getBoundingClientRect();
@@ -150,13 +192,6 @@ export default function ChatBot() {
     };
   }, [open]);
 
-  useEffect(() => {
-    return () => {
-      document.body.style.overflow = "";
-      abortRef.current?.abort();
-    };
-  }, []);
-
   function closePanel() {
     if (abortRef.current) {
       intentionalAbortRef.current = true;
@@ -167,7 +202,6 @@ export default function ChatBot() {
     const launcher = launcherRef.current;
 
     if (!panel || !launcher || prefersReducedMotion()) {
-      document.body.style.overflow = "";
       setOpen(false);
       launcherRef.current?.focus();
       return;
@@ -193,7 +227,6 @@ export default function ChatBot() {
         duration: 0.32,
         ease: "power2.in",
         onComplete: () => {
-          document.body.style.overflow = "";
           setOpen(false);
           launcherRef.current?.focus();
         },
@@ -216,12 +249,7 @@ export default function ChatBot() {
     closePanel();
   }
 
-  const backdropTouchStartY = useRef(0);
-  function handleBackdropTouchStart(e: React.TouchEvent) {
-    backdropTouchStartY.current = e.touches[0].clientY;
-  }
-  function handleBackdropTouchMove(e: React.TouchEvent) {
-    document.body.style.overflow = "";
+  function handleBackdropTouchMove() {
     closePanel();
   }
 
@@ -253,6 +281,7 @@ export default function ChatBot() {
         }),
         signal: controller.signal,
       });
+      clearTimeout(timeout); // timeout only guards time-to-response, not typing
 
       if (res.status === 429) {
         throw new Error("RATE_LIMITED");
@@ -263,25 +292,47 @@ export default function ChatBot() {
 
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
-      let assistantText = "";
+      let received = "";
+      let shown = 0;
+      let streamDone = false;
 
       setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
 
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        assistantText += decoder.decode(value, { stream: true });
-        setMessages((prev) => {
-          const updated = [...prev];
-          updated[updated.length - 1] = {
-            role: "assistant",
-            content: assistantText,
-          };
-          return updated;
-        });
-      }
+      const typed = new Promise<void>((resolve) => {
+        const tick = () => {
+          if (controller.signal.aborted) return resolve();
+          if (shown < received.length) {
+            const backlog = received.length - shown;
+            shown = Math.min(
+              received.length,
+              shown + Math.max(1, Math.ceil(backlog / 30)),
+            );
+            const content = received.slice(0, shown);
+            setMessages((prev) => {
+              const updated = [...prev];
+              updated[updated.length - 1] = { role: "assistant", content };
+              return updated;
+            });
+          } else if (streamDone) {
+            return resolve();
+          }
+          setTimeout(tick, 16);
+        };
+        tick();
+      });
 
-      if (!assistantText.trim()) {
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          received += decoder.decode(value, { stream: true });
+        }
+      } finally {
+        streamDone = true;
+      }
+      await typed;
+
+      if (!received.trim()) {
         setMessages((prev) => {
           const updated = [...prev];
           updated[updated.length - 1] = {
@@ -340,24 +391,24 @@ export default function ChatBot() {
   return (
     <>
       {/* Launcher */}
-      <button
+      <motion.button
         ref={launcherRef}
+        style={{ x, y }}
         onClick={handleLauncherClick}
         aria-label={open ? "Close chat" : "Ask about Vishal"}
         aria-expanded={open}
         className="fixed bottom-5 right-5 md:bottom-6 md:right-6 z-50 w-10 h-10 rounded-full
-          bg-white/10 backdrop-blur-xl backdrop-saturate-150
-          border border-white/10
-          text-white font-display
-          flex items-center justify-center
-          active:scale-95 transition-transform"
+      bg-white/10 backdrop-blur-xl backdrop-saturate-150
+        border border-white/10
+      text-white font-display
+        flex items-center justify-center"
       >
         {open ? (
           <span className="text-xl leading-none drop-shadow-sm">✕</span>
         ) : (
           <span className="text-xs tracking-tight drop-shadow-sm">ASK</span>
         )}
-      </button>
+      </motion.button>
 
       {open && (
         <>
@@ -366,7 +417,6 @@ export default function ChatBot() {
             className="fixed inset-0 z-40 bg-ink/50 backdrop-blur-sm"
             onClick={closePanel}
             onWheel={handleBackdropWheel}
-            onTouchStart={handleBackdropTouchStart}
             onTouchMove={handleBackdropTouchMove}
             aria-hidden="true"
           />
@@ -517,7 +567,7 @@ export default function ChatBot() {
                   >
                     <div
                       className={`max-w-[85%] min-w-0 text-sm leading-relaxed rounded-2xl px-4 py-2.5
-                        [break-words] break-all overflow-wrap:anywhere whitespace-pre-wrap
+                        wrap-break-word whitespace-pre-wrap
                         border backdrop-blur-md ${
                           m.role === "user"
                             ? "bg-amber/90 text-ink border-amber/40 rounded-br-sm"
