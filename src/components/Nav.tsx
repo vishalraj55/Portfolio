@@ -144,7 +144,7 @@ export default function Nav() {
           <a
             href="#contact"
             className="hidden md:inline-flex items-center gap-2 tabular-nums text-label uppercase ..."
-            data-cursor="My local time - India"
+            data-cursor="My local time - Mumbai, India"
           >
            {time}
           </a>
