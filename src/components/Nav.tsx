@@ -19,22 +19,29 @@ export default function Nav() {
   const itemsRef = useRef<(HTMLLIElement | null)[]>([]);
   const tlRef = useRef<gsap.core.Timeline | null>(null);
 
-  const [time, setTime] = useState("");
+  const [time, setTime] = useState({ hm: "", s: "", period: "" });
 
   useEffect(() => {
-    const tick = () =>
-      setTime(
-        new Date().toLocaleTimeString("en-IN", {
-          timeZone: "Asia/Kolkata",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-        }),
-      );
+    const fmt = new Intl.DateTimeFormat("en-IN", {
+      timeZone: "Asia/Kolkata",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+    const tick = () => {
+      const parts = fmt.formatToParts(new Date());
+      const get = (t: string) => parts.find((p) => p.type === t)?.value ?? "";
+      setTime({
+        hm: `${get("hour")}:${get("minute")}`,
+        s: get("second"),
+        period: get("dayPeriod"),
+      });
+    };
     tick();
     const id = setInterval(tick, 1000);
     return () => clearInterval(id);
   }, []);
+
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
     onScroll();
@@ -111,11 +118,17 @@ export default function Nav() {
       <header
         className={`fixed top-0 left-0 right-0 z-50 gutter transition-[background-color,border-color,padding] duration-500 ease-out ${
           scrolled
-            ? "py-3 bg-ink/85 backdrop-blur-md border-b border-line"
+            ? "py-3 bg-ink/85 backdrop-blur-md border-b border-line md:py-4 md:bg-transparent md:backdrop-blur-none md:border-transparent md:pointer-events-none"
             : "py-6 border-b border-transparent"
         }`}
       >
-        <nav className="flex items-center justify-between">
+        <nav
+          className={`mx-auto flex w-full max-w-full items-center justify-between transition-[max-width,padding,background-color,border-color] duration-500 ease-out md:border md:pointer-events-auto ${
+            scrolled
+              ? "md:max-w-160 md:rounded-full md:border-line md:bg-ink/80 md:px-6 md:py-2.5 md:backdrop-blur-md"
+              : "md:max-w-full md:rounded-full md:border-transparent md:bg-transparent md:px-0 md:py-0"
+          }`}
+        >
           <a
             href="#hero"
             className="relative z-50 font-display italic text-lg sm:text-xl tracking-tight text-bone"
@@ -124,10 +137,21 @@ export default function Nav() {
             VR<span className="text-amber not-italic">.</span>
           </a>
 
-          <ul className="hidden md:flex items-center gap-9">
+          <ul
+            className={`hidden md:flex items-center transition-[gap] duration-500 ease-out ${
+              scrolled ? "gap-7" : "gap-9"
+            }`}
+          >
             {LINKS.map((l, i) => (
-              <li key={l.href} className="flex items-center gap-2">
-                <span className="text-label text-muted">
+              <li key={l.href} className="flex items-center">
+                <span
+                  aria-hidden
+                  className={`inline-block overflow-hidden whitespace-nowrap text-label text-muted transition-[max-width,opacity,margin] duration-500 ease-out ${
+                    scrolled
+                      ? "mr-0 max-w-0 opacity-0"
+                      : "mr-2 max-w-6 opacity-100"
+                  }`}
+                >
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <a
@@ -143,10 +167,19 @@ export default function Nav() {
 
           <a
             href="#contact"
-            className="hidden md:inline-flex items-center gap-2 tabular-nums text-label uppercase ..."
+            className="hidden md:inline-flex items-center tabular-nums text-label uppercase text-bone-dim hover:text-amber transition-colors duration-300"
             data-cursor="My local time - Mumbai, India"
           >
-           {time}
+            <span>{time.hm}</span>
+            <span
+              aria-hidden
+              className={`inline-block overflow-hidden whitespace-nowrap transition-[max-width,opacity] duration-500 ease-out ${
+                scrolled ? "max-w-0 opacity-0" : "max-w-8 opacity-100"
+              }`}
+            >
+              :{time.s}
+            </span>
+            {time.period && <span className="ml-1.5">{time.period}</span>}
           </a>
 
           <button
