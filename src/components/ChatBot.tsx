@@ -62,16 +62,8 @@ export default function ChatBot() {
     const update = () => {
       const btn = launcherRef.current;
       const slot = document.getElementById("ask-slot");
-      const section = document.getElementById("contact");
-      if (!btn || !slot || !section) return;
+      if (!btn || !slot) return;
 
-      const t = Math.min(
-        1,
-        Math.max(
-          0,
-          1 - section.getBoundingClientRect().top / window.innerHeight,
-        ),
-      );
       const s = slot.getBoundingClientRect();
       const cs = getComputedStyle(btn);
       const root = document.documentElement;
@@ -81,8 +73,14 @@ export default function ChatBot() {
       const homeY =
         root.clientHeight - parseFloat(cs.bottom) - btn.offsetHeight / 2;
 
-      x.set((s.left + s.width / 2 - homeX) * t);
-      y.set((s.top + s.height / 2 - homeY) * t);
+      const slotX = s.left + s.width / 2;
+      const slotY = s.top + s.height / 2;
+
+      const PULL = 160;
+      const t = Math.min(1, Math.max(0, (homeY - slotY + PULL) / PULL));
+
+      x.set((slotX - homeX) * t);
+      y.set((slotY - homeY) * t);
     };
 
     update();

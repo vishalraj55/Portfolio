@@ -1,20 +1,31 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { gsap } from "gsap";
 
 const BANNER_OFFSET_X = 20;
 const BANNER_OFFSET_Y = 26;
 const EDGE_PADDING = 12;
+const HOVER_SELECTOR = "[data-cursor], a, button, [role='button']";
 
 export default function CustomCursor() {
   const cursorRef = useRef<HTMLDivElement>(null);
   const bannerRef = useRef<HTMLDivElement>(null);
-  const [isTouch] = useState(() =>
-    typeof window !== "undefined"
-      ? window.matchMedia("(pointer: coarse)").matches
-      : false,
+  const COARSE_QUERY = "(pointer: coarse)";
+
+  function subscribeCoarse(cb: () => void) {
+    const mq = window.matchMedia(COARSE_QUERY);
+    mq.addEventListener("change", cb);
+    return () => mq.removeEventListener("change", cb);
+  }
+  const getCoarse = () => window.matchMedia(COARSE_QUERY).matches;
+  const getCoarseServer = () => true;
+  const isTouch = useSyncExternalStore(
+    subscribeCoarse,
+    getCoarse,
+    getCoarseServer,
   );
+
   const [hovering, setHovering] = useState(false);
   const [label, setLabel] = useState("");
 
@@ -41,11 +52,11 @@ export default function CustomCursor() {
       duration: 0.35,
       ease: "power3.out",
     });
+    let shown = false;
 
     function getBannerPosition(clientX: number, clientY: number) {
-      const rect = banner!.getBoundingClientRect();
-      const w = rect.width || banner!.offsetWidth;
-      const h = rect.height || banner!.offsetHeight;
+      const w = banner!.offsetWidth;
+      const h = banner!.offsetHeight;
 
       let x = clientX + BANNER_OFFSET_X;
       let y = clientY + BANNER_OFFSET_Y;
@@ -64,6 +75,12 @@ export default function CustomCursor() {
     }
 
     const move = (e: MouseEvent) => {
+      if (!shown) {
+        shown = true;
+        gsap.set(cursor, { x: e.clientX, y: e.clientY, opacity: 1 });
+        const p = getBannerPosition(e.clientX, e.clientY);
+        gsap.set(banner, { x: p.x, y: p.y });
+      }
       cx(e.clientX);
       cy(e.clientY);
       const { x, y } = getBannerPosition(e.clientX, e.clientY);
@@ -73,10 +90,18 @@ export default function CustomCursor() {
     window.addEventListener("mousemove", move);
 
     const onOver = (e: MouseEvent) => {
-      const target = (e.target as HTMLElement).closest<HTMLElement>(
-        "[data-cursor], a, button, [role='button']",
-      );
+      const el = e.target as HTMLElement;
+      if (el.closest("[data-no-banner]")) {
+        setHovering(false);
+        return;
+      }
+      const target = el.closest<HTMLElement>(HOVER_SELECTOR);
       if (!target) return;
+      if (target.dataset.cursor === "") {
+        setHovering(false);
+        return;
+      }
+
       const text =
         target.dataset.cursor ||
         target.getAttribute("aria-label") ||
@@ -87,7 +112,7 @@ export default function CustomCursor() {
     };
     const onOut = (e: MouseEvent) => {
       const from = (e.target as HTMLElement).closest<HTMLElement>(
-        "[data-cursor], a, button, [role='button']",
+        HOVER_SELECTOR,
       );
       if (!from) return;
       const to = e.relatedTarget as HTMLElement | null;
@@ -104,6 +129,7 @@ export default function CustomCursor() {
       gsap.to(banner, { opacity: 0, duration: 0.15, ease: "power2.out" });
     };
     const onWindowEnter = () => {
+      if (!shown) return;
       gsap.to(cursor, { opacity: 1, duration: 0.15, ease: "power2.out" });
     };
     html.addEventListener("mouseleave", onWindowLeave);
@@ -137,10 +163,9 @@ export default function CustomCursor() {
 
   return (
     <>
-      {/* arrow cursor */}
       <div
         ref={cursorRef}
-        className="hidden md:block fixed top-0 left-0 z-10000 pointer-events-none -translate-x-1 -translate-y-0.5"
+        className="hidden md:block fixed top-0 left-0 z-10000 pointer-events-none opacity-0 -translate-x-1 -translate-y-0.5"
       >
         <svg width="20" height="22" viewBox="0 0 20 22" fill="none">
           <path

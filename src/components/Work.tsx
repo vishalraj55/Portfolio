@@ -1,284 +1,347 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { projects } from "@/lib/data";
+import { useRef, useState } from "react";
+import {
+  AnimatePresence,
+  motion,
+  useInView,
+  useMotionValue,
+  useReducedMotion,
+  useSpring,
+  useTransform,
+  useVelocity,
+} from "framer-motion";
 import Image from "next/image";
+import { projects } from "@/lib/data";
 
-gsap.registerPlugin(ScrollTrigger);
-
-const SPROCKET_H =
-  "repeating-linear-gradient(90deg, currentColor 0 6px, transparent 6px 20px)";
-const SPROCKET_V =
-  "repeating-linear-gradient(180deg, currentColor 0 6px, transparent 6px 20px)";
-
-export default function Work() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
-  const counterRef = useRef<HTMLSpanElement>(null);
-
-  const linkRefs = useRef<(HTMLAnchorElement | null)[]>([]);
-  const glowRefs = useRef<(HTMLSpanElement | null)[]>([]);
-  const moveTos = useRef<Record<number, MoveTo>>({});
-  type MoveTo = { x: (v: number) => void; y: (v: number) => void };
-
-  const total = projects.length;
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      const mm = gsap.matchMedia();
-
-      mm.add(
-        "(min-width: 1024px) and (prefers-reduced-motion: no-preference)",
-        () => {
-          const track = trackRef.current;
-          const section = sectionRef.current;
-          if (!track || !section) return;
-
-          const distance = track.scrollWidth - window.innerWidth;
-
-          const tween = gsap.to(track, {
-            x: -distance,
-            ease: "none",
-            scrollTrigger: {
-              trigger: section,
-              start: "top top",
-              end: () => `+=${distance + window.innerHeight * 0.4}`,
-              scrub: 0.6,
-              pin: true,
-              anticipatePin: 1,
-              invalidateOnRefresh: true,
-              onUpdate: (self) => {
-                if (!counterRef.current) return;
-                const idx = Math.min(
-                  total,
-                  Math.max(1, Math.round(self.progress * (total - 1)) + 1),
-                );
-                counterRef.current.textContent = String(idx).padStart(2, "0");
-              },
-            },
-          });
-
-          gsap.utils.toArray<HTMLElement>(".frame-card").forEach((card) => {
-            gsap.fromTo(
-              card,
-              { opacity: 0.3, filter: "saturate(0.3) brightness(0.8)" },
-              {
-                opacity: 1,
-                filter: "saturate(1) brightness(1)",
-                ease: "none",
-                scrollTrigger: {
-                  trigger: section,
-                  containerAnimation: tween,
-                  start: "left 80%",
-                  end: "left 40%",
-                  scrub: true,
-                },
-              },
-            );
-          });
-
-          return () => {
-            tween.kill();
-          };
-        },
-      );
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, [total]);
-
-  const handleLinkMove =
-    (i: number) => (e: React.MouseEvent<HTMLAnchorElement>) => {
-      const el = linkRefs.current[i];
-      const glow = glowRefs.current[i];
-      if (!el || !glow) return;
-
-      if (!moveTos.current[i]) {
-        moveTos.current[i] = {
-          x: gsap.quickTo(glow, "left", { duration: 0.35, ease: "power3.out" }),
-          y: gsap.quickTo(glow, "top", { duration: 0.35, ease: "power3.out" }),
-        };
-      }
-
-      const rect = el.getBoundingClientRect();
-      moveTos.current[i].x(e.clientX - rect.left);
-      moveTos.current[i].y(e.clientY - rect.top);
-    };
-
-  const handleLinkEnter = (i: number) => () => {
-    gsap.to(glowRefs.current[i], { opacity: 1, duration: 0.25 });
-    gsap.to(linkRefs.current[i], {
-      scale: 1.03,
-      duration: 0.3,
-      ease: "power3.out",
-    });
-  };
-
-  const handleLinkLeave = (i: number) => () => {
-    gsap.to(glowRefs.current[i], { opacity: 0, duration: 0.35 });
-    gsap.to(linkRefs.current[i], {
-      scale: 1,
-      duration: 0.35,
-      ease: "power3.out",
-    });
-  };
+const EASE = [0.22, 1, 0.36, 1] as const;
+function Mask({
+  children,
+  delay = 0,
+  className = "",
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  className?: string;
+}) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true, amount: 0.2 });
 
   return (
-    <section
-      id="work"
-      ref={sectionRef}
-      className="relative bg-ink lg:h-screen lg:overflow-hidden"
+    <span
+      ref={ref}
+      className={`my-[-0.1em] block overflow-hidden py-[0.1em] ${className}`}
     >
-      {/* header */}
-      <div className="gutter pt-24 pb-10 lg:pb-0 lg:absolute lg:inset-y-0 lg:left-0 lg:z-20 lg:flex lg:w-[26vw] lg:min-w-76 lg:items-center lg:bg-linear-to-r lg:from-ink lg:from-70% lg:to-transparent">
-        <div>
-          <p className="text-label uppercase text-amber mb-3">
-            Frame <span ref={counterRef}>01</span> /{" "}
-            {String(total).padStart(2, "0")}
-          </p>
-          <h2 className="font-display text-display-1 text-bone">
-            Shipped, <span className=" text-bone-dim">not</span>
-            <br />
-            staged.
-          </h2>
-          <p className="mt-5 text-body-fluid text-muted max-w-[18rem]">
-            Four products, four different problems. Scroll to run the reel.
-          </p>
-        </div>
-      </div>
+      <motion.span
+        className="block"
+        initial={false}
+        animate={{ y: inView ? 0 : "110%" }}
+        transition={{ duration: 0.9, ease: EASE, delay }}
+      >
+        {children}
+      </motion.span>
+    </span>
+  );
+}
 
-      {/* filmstrip */}
-      <div className="lg:absolute lg:inset-0 lg:flex lg:items-center">
-        <div
-          ref={trackRef}
-          className="relative flex flex-col lg:flex-row lg:h-full lg:w-max lg:pl-[26vw] lg:pr-[14vw]"
+/* row */
+type Project = (typeof projects)[number];
+
+function Row({
+  p,
+  i,
+  open,
+  dimmed,
+  hovered,
+  onToggle,
+  onHover,
+}: {
+  p: Project;
+  i: number;
+  open: boolean;
+  dimmed: boolean;
+  hovered: boolean;
+  onToggle: () => void;
+  onHover: (v: boolean) => void;
+}) {
+  const accent = p.tone === "amber" ? "bg-amber" : "bg-teal";
+  const accentText = p.tone === "amber" ? "text-amber" : "text-teal";
+
+  return (
+    <motion.li
+      animate={{ opacity: dimmed ? 0.25 : 1 }}
+      transition={{ duration: 0.4, ease: EASE }}
+      className="relative"
+      onPointerEnter={(e) => e.pointerType === "mouse" && onHover(true)}
+      onPointerLeave={() => onHover(false)}
+    >
+      {/* base line + animated fill */}
+      <motion.span
+        aria-hidden
+        className="absolute inset-x-0 top-0 h-px origin-left bg-line"
+        initial={{ scaleX: 0 }}
+        whileInView={{ scaleX: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 1.1, ease: EASE, delay: i * 0.08 }}
+      />
+      <motion.span
+        aria-hidden
+        className={`absolute inset-x-0 top-0 h-px origin-left ${accent}`}
+        animate={{ scaleX: hovered || open ? 1 : 0 }}
+        transition={{ duration: 0.6, ease: EASE }}
+      />
+
+      <button
+        onClick={onToggle}
+        aria-expanded={open}
+        className="group flex w-full items-center gap-4 py-6 text-left sm:gap-8 lg:py-9"
+      >
+        <span
+          className={`w-8 shrink-0 text-timecode transition-colors duration-300 sm:w-12 ${
+            hovered || open ? accentText : "text-muted"
+          }`}
         >
-          {/* continuous sprocket rails */}
-          <div
-            className="hidden lg:block lg:absolute lg:top-6 lg:left-0 lg:right-0 lg:h-2 text-line-soft opacity-70 pointer-events-none"
-            style={{ backgroundImage: SPROCKET_H }}
-          />
-          <div
-            className="hidden lg:block lg:absolute lg:bottom-6 lg:left-0 lg:right-0 lg:h-2 text-line-soft opacity-70 pointer-events-none"
-            style={{ backgroundImage: SPROCKET_H }}
-          />
+          {String(i + 1).padStart(2, "0")}
+        </span>
 
-          {projects.map((p, i) => (
-            <article
-              key={p.reel}
-              className="frame-card group relative flex shrink-0 flex-col border-b border-line py-10 first:pt-0 last:border-b-0 lg:h-full lg:w-[min(70vw,40rem)] lg:flex-row lg:border-b-0 lg:border-r lg:border-line lg:py-20 lg:last:border-r-0"
-            >
-              {/* mobile sprocket rail */}
-              <div
-                className="absolute inset-y-0 left-0 w-2 text-line-soft opacity-70 lg:hidden"
-                style={{ backgroundImage: SPROCKET_V }}
-              />
+        <motion.span
+          className="block min-w-0 flex-1 font-display leading-[0.95] text-bone text-[clamp(2rem,7vw,5.5rem)]"
+          animate={{ x: hovered ? 24 : 0 }}
+          transition={{ type: "spring", stiffness: 220, damping: 22 }}
+        >
+          <Mask delay={i * 0.08}>
+            <span className={open ? "italic" : ""}>{p.title}</span>
+          </Mask>
+        </motion.span>
 
-              <div className="pl-6 pr-6 w-full lg:flex-1 lg:min-w-0 lg:pl-10 lg:pr-10 lg:flex lg:h-full lg:flex-col lg:justify-center">
-                <div className="mb-4 flex items-center gap-3 lg:mb-6">
-                  <span className="text-timecode text-muted">
-                    {String(i + 1).padStart(2, "0")} / {p.year}
-                  </span>
-                  <span className="h-px flex-1 bg-line" />
-                </div>
+        <span className="hidden shrink-0 text-right text-label uppercase text-muted md:block">
+          {p.role}
+          <span className="block text-timecode">{p.year}</span>
+        </span>
 
-                <div className="relative aspect-4/3 sm:aspect-16/10 lg:aspect-auto lg:h-[50%] lg:min-h-64 w-full overflow-hidden rounded-lg lg:rounded-xl vignette">
+        <motion.span
+          aria-hidden
+          animate={{
+            rotate: open ? 45 : 0,
+            backgroundColor:
+              hovered || open ? "rgba(229,130,74,1)" : "rgba(229,130,74,0)",
+            color: hovered || open ? "#0b0b0c" : "#8a8a8a",
+          }}
+          transition={{ type: "spring", stiffness: 300, damping: 20 }}
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-line text-lg leading-none sm:h-12 sm:w-12"
+        >
+          +
+        </motion.span>
+      </button>
+
+      {/* expandable detail */}
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            key="detail"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.7, ease: EASE }}
+            className="overflow-hidden"
+          >
+            <div className="grid gap-6 pb-6 pl-0 sm:gap-8 sm:pb-10 sm:pl-20 lg:grid-cols-[1fr_auto] lg:gap-16 lg:pb-14">
+              <div className="max-w-xl">
+                {/* image: mobile/tablet only (desktop uses cursor preview) */}
+                <motion.div
+                  className="relative mb-6 aspect-16/10 w-full overflow-hidden rounded-lg lg:hidden"
+                  initial={{ clipPath: "inset(0 0 100% 0)" }}
+                  animate={{ clipPath: "inset(0 0 0% 0)" }}
+                  transition={{ duration: 0.9, ease: EASE, delay: 0.1 }}
+                >
                   <Image
                     src={p.image}
                     alt={p.title}
                     fill
-                    sizes="(min-width: 1024px) 40rem, 100vw"
+                    sizes="100vw"
                     className="object-cover"
                   />
-                  <div
-                    className={`absolute inset-0 ${
-                      p.tone === "amber"
-                        ? "bg-linear-to-t from-ink via-ink/20 to-transparent"
-                        : "bg-linear-to-t from-ink via-ink/25 to-transparent"
-                    }`}
-                  />
-                  <span
-                    className={`absolute bottom-4 right-5 font-display italic leading-none text-[clamp(2.5rem,7vw,4.5rem)] ${
-                      p.tone === "amber" ? "text-amber/40" : "text-teal/45"
-                    }`}
-                  >
-                    {p.reel}
-                  </span>
-                </div>
+                </motion.div>
 
-                <div className="mt-6">
-                  <div className="mb-3 flex flex-col gap-1">
-                    <h3 className="font-display text-display-3 text-bone">
-                      {p.title}
-                    </h3>
-                    <span className="whitespace-nowrap text-label uppercase text-muted">
-                      {p.role}
-                    </span>
-                  </div>
-                  <p className="mb-5 text-body-fluid text-bone-dim lg:max-w-md">
-                    {p.detail}
-                  </p>
-                  <ul className="mb-5 flex flex-wrap gap-2">
-                    {p.stack.map((s) => (
-                      <li
-                        key={s}
-                        className="rounded-full border border-line px-3 py-1 text-label uppercase text-muted"
-                      >
-                        {s}
-                      </li>
-                    ))}
-                  </ul>
+                <motion.p
+                  className="text-body-fluid text-bone-dim"
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.7, ease: EASE, delay: 0.15 }}
+                >
+                  {p.detail}
+                </motion.p>
 
-                  {p.link && (
-                    <a
-                      ref={(el) => {
-                        linkRefs.current[i] = el;
-                      }}
-                      href={p.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      // data-cursor="View"
-                      onMouseMove={handleLinkMove(i)}
-                      onMouseEnter={handleLinkEnter(i)}
-                      onMouseLeave={handleLinkLeave(i)}
-                      className="relative inline-flex items-center gap-3 overflow-hidden rounded-full border border-line bg-surface px-6 py-3 text-label uppercase text-bone will-change-transform"
-                    >
-                      <span
-                        ref={(el) => {
-                          glowRefs.current[i] = el;
-                        }}
-                        className="pointer-events-none absolute h-32 w-32 -translate-x-1/2 -translate-y-1/2 rounded-full opacity-0"
-                        style={{
-                          left: "50%",
-                          top: "50%",
-                          background:
-                            "radial-gradient(circle, rgba(229,130,74,0.55) 0%, rgba(229,130,74,0.12) 45%, transparent 70%)",
-                          filter: "blur(2px)",
-                        }}
-                      />
-
-                      <span
-                        className="pointer-events-none absolute inset-x-0 top-0 h-1/2 rounded-t-full"
-                        style={{
-                          background:
-                            "linear-gradient(to bottom, rgba(255,255,255,0.06), transparent)",
-                        }}
-                      />
-
-                      <span className="relative z-10">View live</span>
-                      <span className="relative z-10 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-line text-muted">
-                        ↗
-                      </span>
-                    </a>
-                  )}
-                </div>
+                <span className="mt-4 block text-label uppercase text-muted md:hidden">
+                  {p.role} · {p.year}
+                </span>
               </div>
-            </article>
+
+              <div className="flex flex-col items-start gap-6 lg:items-end">
+                <motion.ul
+                  className="flex flex-wrap gap-2 lg:max-w-xs lg:justify-end"
+                  initial="hidden"
+                  animate="show"
+                  variants={{
+                    show: {
+                      transition: { staggerChildren: 0.05, delayChildren: 0.2 },
+                    },
+                  }}
+                >
+                  {p.stack.map((s) => (
+                    <motion.li
+                      key={s}
+                      variants={{
+                        hidden: { opacity: 0, y: 10 },
+                        show: { opacity: 1, y: 0 },
+                      }}
+                      className="rounded-full border border-line px-3 py-1 text-label uppercase text-muted"
+                    >
+                      {s}
+                    </motion.li>
+                  ))}
+                </motion.ul>
+
+                {p.link && (
+                  <motion.a
+                    href={p.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group/cta inline-flex items-center gap-3 text-label uppercase text-bone"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.4 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <button
+                      type="button"
+                      className="font-extrabold group relative inline-flex items-center gap-2 overflow-hidden rounded-lg border border-white/20 bg-white px-4 py-2 text-sm text-black transition-all duration-300 hover:gap-3 hover:bg-white/90 hover:shadow-lg active:scale-95"
+                    >
+                      <span>View live</span>
+                    </button>
+                  </motion.a>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.li>
+  );
+}
+
+/* section  */
+export default function Work() {
+  const reduce = useReducedMotion();
+  const [open, setOpen] = useState<number | null>(0);
+  const [hover, setHover] = useState<number | null>(null);
+  const total = projects.length;
+
+  // cursor-follow preview
+  const mx = useMotionValue(0);
+  const my = useMotionValue(0);
+  const x = useSpring(mx, { stiffness: 180, damping: 22, mass: 0.6 });
+  const y = useSpring(my, { stiffness: 180, damping: 22, mass: 0.6 });
+  const vx = useSpring(useVelocity(mx), { stiffness: 120, damping: 20 });
+  const rotate = useTransform(vx, [-1800, 1800], [-10, 10]);
+
+  const onMove = (e: React.PointerEvent<HTMLElement>) => {
+    if (e.pointerType !== "mouse") return;
+    mx.set(e.clientX);
+    my.set(e.clientY);
+  };
+
+  const showPreview = hover !== null && !reduce;
+
+  return (
+    <section
+      id="work"
+      data-no-banner
+      onPointerMove={onMove}
+      className="relative bg-ink py-20 sm:py-28 lg:py-10"
+    >
+      <div className="mx-auto w-full px-5 sm:px-8 lg:px-5">
+        {/* header */}
+        <div className="mb-12 flex flex-col gap-6 sm:mb-14 lg:mb-10 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <motion.p
+              className="mb-4 text-label uppercase text-amber"
+              initial={{ opacity: 0, x: -12 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              Selected work ({String(total).padStart(2, "0")})
+            </motion.p>
+            <h2 className="font-display text-display-1 leading-[0.95] text-bone">
+              <Mask>Shipped,</Mask>
+              <Mask delay={0.1}>
+                <span className="text-bone-dim">not</span> staged.
+              </Mask>
+            </h2>
+          </div>
+        </div>
+
+        {/* list */}
+        <ul
+          className="border-b border-line"
+          onPointerLeave={() => setHover(null)}
+        >
+          {projects.map((p, i) => (
+            <Row
+              key={p.reel}
+              p={p}
+              i={i}
+              open={open === i}
+              hovered={hover === i}
+              dimmed={hover !== null && hover !== i}
+              onToggle={() => setOpen(open === i ? null : i)}
+              onHover={(v) => setHover(v ? i : null)}
+            />
+          ))}
+        </ul>
+      </div>
+
+      {/* floating cursor preview (desktop, mouse only) */}
+      <motion.div
+        aria-hidden
+        className="pointer-events-none fixed left-0 top-0 z-50 hidden lg:block"
+        style={{ x, y, rotate, marginLeft: 36, marginTop: -130 }}
+        animate={{ scale: showPreview ? 1 : 0.6, opacity: showPreview ? 1 : 0 }}
+        transition={{ duration: 0.4, ease: EASE }}
+      >
+        <div className="relative h-65 w-88 overflow-hidden rounded-xl border border-line bg-surface shadow-2xl">
+          {projects.map((p, i) => (
+            <motion.div
+              key={p.reel}
+              className="absolute inset-0"
+              initial={false}
+              animate={{
+                clipPath:
+                  hover === i ? "inset(0% 0% 0% 0%)" : "inset(0% 0% 100% 0%)",
+                scale: hover === i ? 1 : 1.15,
+              }}
+              transition={{ duration: 0.65, ease: EASE }}
+            >
+              <Image
+                src={p.image}
+                alt=""
+                fill
+                sizes="22rem"
+                className="object-cover"
+              />
+              <div className="absolute inset-0 bg-linear-to-t from-ink/70 via-transparent to-transparent" />
+              <span
+                className={`absolute bottom-3 right-4 font-display italic leading-none text-4xl ${
+                  p.tone === "amber" ? "text-amber/70" : "text-teal/70"
+                }`}
+              >
+                {p.reel}
+              </span>
+            </motion.div>
           ))}
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }

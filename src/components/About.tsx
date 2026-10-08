@@ -4,22 +4,37 @@ import { useEffect, useRef } from "react";
 import Image from "next/image";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { FaGithub, FaLinkedinIn } from "react-icons/fa6";
+import { HiOutlineMail } from "react-icons/hi";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const MARQUEE_TEXT = "CREATING PRODUCTS ✦ SOLVING PROBLEMS ✦ SHIPPING IDEAS ✦ ";
 
+const SOCIALS = [
+  { label: "GitHub", href: "https://github.com/vishalraj55", Icon: FaGithub },
+  {
+    label: "Email",
+    href: "mailto:vishalraj2487@gmail.com",
+    Icon: HiOutlineMail,
+  },
+  {
+    label: "LinkedIn",
+    href: "https://linkedin.com/in/vishalraj55",
+    Icon: FaLinkedinIn,
+  },
+];
+
 export default function About() {
   const sectionRef = useRef<HTMLElement>(null);
-  // const panelsRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const photoRef = useRef<HTMLDivElement>(null);
   const photoMobileRef = useRef<HTMLDivElement>(null);
-  const marqueeTrackRef = useRef<HTMLDivElement>(null);
   const curveTextPathRef = useRef<SVGTextPathElement>(null);
   const curveTextPathMobileRef = useRef<SVGTextPathElement>(null);
   useEffect(() => {
     const ctx = gsap.context(() => {
+      const trigger = { trigger: stageRef.current, start: "top 75%" };
       gsap.fromTo(
         ".about-line",
         { opacity: 0, y: 24 },
@@ -29,7 +44,7 @@ export default function About() {
           duration: 1,
           ease: "power3.out",
           stagger: 0.08,
-          scrollTrigger: { trigger: stageRef.current, start: "top 75%" },
+          scrollTrigger: trigger,
         },
       );
 
@@ -58,24 +73,10 @@ export default function About() {
           duration: 0.7,
           ease: "back.out(2)",
           stagger: 0.1,
-          scrollTrigger: { trigger: stageRef.current, start: "top 75%" },
+          scrollTrigger: trigger,
         },
       );
 
-      if (marqueeTrackRef.current) {
-        gsap.to(marqueeTrackRef.current, {
-          xPercent: -50,
-          ease: "none",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 0.6,
-          },
-        });
-      }
-
-      // curved background marquee - opposite diagonal
       [curveTextPathRef.current, curveTextPathMobileRef.current].forEach(
         (el) => {
           if (!el) return;
@@ -100,23 +101,18 @@ export default function About() {
     <section
       id="about"
       ref={sectionRef}
-      className="relative overflow-hidden border-t border-line section-bg-about pt-15 pb-5 md:pb-35 px-6 md:px-10 lg:px-16"
+      className="relative overflow-hidden section-bg-about pt-15 pb-5 md:pb-35 px-6 md:px-10 lg:px-16"
     >
       {/*  background marquee */}
       <div
-        className="absolute inset-0 z-0 pointer-events-none select-none hidden md:block "
+        className="absolute inset-0 z-0 pointer-events-none select-none hidden md:block"
         aria-hidden="true"
       >
         <svg preserveAspectRatio="xMidYMid slice" className="w-full h-full">
           <defs>
             <path
               id="about-curve"
-              d="
-          M -200 220
-          C 120 120, 280 650, 620 540
-          S 1180 120, 1560 480
-          S 2050 900, 2250 700
-        "
+              d="M -200 220 C 120 120, 280 650, 620 540 S 1180 120, 1560 480 S 2050 900, 2250 700"
               fill="none"
             />
           </defs>
@@ -140,207 +136,24 @@ export default function About() {
         03 - The Cut
       </p>
 
-      {/* DESKTOP LAYOUT*/}
       <div
         ref={stageRef}
-        className="relative z-10 hidden md:flex items-center gap-10 lg:gap-16 w-full max-w-6xl mx-auto"
+        className="relative z-10 flex flex-col md:flex-row md:items-center gap-10 lg:gap-16 w-full max-w-6xl mx-auto"
       >
-        {/* LEFT: photo + stickers */}
-        <div
-          className="relative shrink-0 w-[48%]"
-          style={{ aspectRatio: "1 / 1.15" }}
-        >
-          {/* Chill bear sticker */}
-          <div
-            data-cursor="Chill Guy"
-            className="about-doodle absolute z-20"
-            style={{ left: "40%", top: "1%", width: "50%", height: "40%" }}
-          >
-            <Image
-              src="/img/Chill.png"
-              alt=""
-              fill
-              sizes="(max-width: 768px) 96px, 280px"
-              className="object-contain"
-            />
-          </div>
-
-          {/* Tape */}
-          <div
-            className="about-doodle absolute z-20 flex items-center justify-center"
-            style={{ left: "-35%", top: "-2%", width: "50%", height: "40%" }}
-          >
-            <div
-              data-cursor="Random png"
-              className="relative"
-              style={{
-                width: "100%",
-                height: "100%",
-                transform: "rotate(-30deg)",
-              }}
-            >
-              <Image
-                src="/img/tape.png"
-                alt=""
-                fill
-                sizes="(max-width: 768px) 128px, 220px"
-                className="object-contain"
-              />
-            </div>
-          </div>
-
-          {/* Main photo */}
-          <div
-            className="absolute z-10 flex items-center justify-center"
-            style={{ left: "-20%", top: "0%", width: "100%", height: "100%" }}
-          >
-            <div
-              ref={photoRef}
-              data-cursor="Vishal Rajbhar"
-              className="relative shadow-2xl"
-              style={{
-                transform: "rotate(-6deg)",
-                width: "80%",
-                height: "80%",
-              }}
-            >
-              <Image
-                src="/img/about.png"
-                alt="Vishal Rajbhar"
-                fill
-                sizes="300px"
-                className="object-cover"
-              />
-            </div>
-          </div>
-
-          {/* Holdon sticker */}
-          <div
-            className="about-doodle absolute z-20 flex items-center justify-center"
-            style={{ left: "-30%", top: "60%", width: "40%", height: "15%" }}
-          >
-            <div
-              className="relative"
-              data-cursor="Felt Cool"
-              style={{
-                width: "100%",
-                height: "100%",
-                transform: "rotate(-5deg)",
-              }}
-            >
-              <Image
-                src="/img/holdon.png"
-                alt=""
-                fill
-                sizes="(max-width: 768px) 160px, 550px"
-                className="object-contain"
-              />
-            </div>
-          </div>
-
-          {/* Bow */}
-          <div
-            className="about-doodle absolute z-20 flex items-center justify-center"
-            style={{ left: "50%", top: "58%", width: "50%", height: "25%" }}
-          >
-            <div
-              className="relative"
-              data-cursor="IDK why i put it"
-              style={{
-                width: "100%",
-                height: "100%",
-                transform: "rotate(-50deg)",
-              }}
-            >
-              <Image
-                src="/img/bow.png"
-                alt=""
-                fill
-                sizes="(max-width: 768px) 200px, 440px"
-                className="object-contain"
-              />
-            </div>
-          </div>
-
-          {/* Drip */}
-          <div
-            className="about-doodle absolute flex items-center justify-center"
-            style={{ left: "-10.5%", top: "89%", width: "80%", height: "28%" }}
-          >
-            <div
-              className="relative"
-              data-cursor="Random png"
-              style={{
-                width: "100%",
-                height: "100%",
-                transform: "rotate(-6deg)",
-              }}
-            >
-              <Image
-                src="/img/drip.png"
-                alt=""
-                fill
-                sizes="(max-width: 768px) 200px, 440px"
-                className="object-contain"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* RIGHT: text content */}
-        <div className="flex-1 min-w-0">
-          <p className="about-line font-display font-bold text-bone leading-none text-6xl lg:text-7xl xl:text-8xl mb-6">
-            Hi<span className="text-amber">!!</span>
-          </p>
-
-          <div className="about-line text-bone-dim font-semibold leading-snug text-lg lg:text-xl xl:text-2xl mb-8 max-w-md">
-            <p>My name is Vishal Rajbhar i&apos;m</p>
-            <p>a designer / Software Developer</p>
-            <p>based in India.</p>
-          </div>
-
-          <div className="about-line text-bone-dim mb-8 max-w-lg">
-            <p className="font-display font-bold leading-tight text-2xl lg:text-3xl mb-2">
-              Ever since
-            </p>
-            <p className="font-semibold leading-snug text-lg lg:text-xl xl:text-2xl">
-              I remember I&apos;ve always had a special interest in visual
-              communication, from the most simple sketch to the most elaborated
-              presentation.
-            </p>
-          </div>
-
-          <div className="about-line text-bone-dim max-w-lg">
-            <p className="leading-snug text-lg lg:text-xl xl:text-2xl">
-              <span className="font-display font-bold text-2xl lg:text-3xl">
-                I live to{" "}
-              </span>
-              discover and experience creative ways to express myself and do it
-              for others.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* MOBILE LAYOUT */}
-      <div className="relative z-10 md:hidden">
         {/* MOBILE background marquee */}
         <div
-          className="absolute inset-0 z-0 pointer-events-none select-none overflow-hidden"
+          className="absolute inset-0 z-0 pointer-events-none select-none overflow-hidden md:hidden"
           aria-hidden="true"
         >
           <svg
             viewBox="0 0 400 100"
-            preserveAspectRatio="None"
+            preserveAspectRatio="none"
             className="w-full h-full"
           >
             <defs>
               <path
                 id="about-curve-mobile"
-                d="
-                    M -50 100
-                    C 100 220, 300 180, 450 140
-                  "
+                d="M -50 100 C 100 220, 300 180, 450 140"
                 fill="none"
               />
             </defs>
@@ -359,15 +172,131 @@ export default function About() {
             </text>
           </svg>
         </div>
-        <div className="relative w-[min(300px,98vw)] mx-auto">
-          <div className="about-doodle absolute -top-2 left-0 z-20"></div>
 
+        {/* LEFT (desktop): photo + stickers */}
+        <div
+          className="relative shrink-0 w-[48%] hidden md:block"
+          style={{ aspectRatio: "1 / 1.15" }}
+        >
+          <div
+            data-cursor="Chill Guy"
+            className="about-doodle absolute z-20"
+            style={{ left: "40%", top: "1%", width: "50%", height: "40%" }}
+          >
+            <Image
+              src="/img/Chill.png"
+              alt=""
+              fill
+              sizes="280px"
+              className="object-contain"
+            />
+          </div>
+
+          <div
+            className="about-doodle absolute z-20 flex items-center justify-center"
+            style={{ left: "-35%", top: "-2%", width: "50%", height: "40%" }}
+          >
+            <div
+              data-cursor="Random png"
+              className="relative size-full"
+              style={{ transform: "rotate(-30deg)" }}
+            >
+              <Image
+                src="/img/tape.png"
+                alt=""
+                fill
+                sizes="220px"
+                className="object-contain"
+              />
+            </div>
+          </div>
+
+          <div
+            className="absolute z-10 flex items-center justify-center"
+            style={{ left: "-20%", top: "0%", width: "100%", height: "100%" }}
+          >
+            <div
+              ref={photoRef}
+              data-cursor="Vishal Rajbhar"
+              className="relative shadow-2xl"
+              style={{ width: "80%", height: "80%" }}
+            >
+              <Image
+                src="/img/about.png"
+                alt="Vishal Rajbhar"
+                fill
+                sizes="300px"
+                className="object-cover"
+              />
+            </div>
+          </div>
+
+          <div
+            className="about-doodle absolute z-20 flex items-center justify-center"
+            style={{ left: "-30%", top: "60%", width: "40%", height: "15%" }}
+          >
+            <div
+              data-cursor="Felt Cool"
+              className="relative size-full"
+              style={{ transform: "rotate(-5deg)" }}
+            >
+              <Image
+                src="/img/holdon.png"
+                alt=""
+                fill
+                sizes="550px"
+                className="object-contain"
+              />
+            </div>
+          </div>
+
+          <div
+            className="about-doodle absolute z-20 flex items-center justify-center"
+            style={{ left: "50%", top: "58%", width: "50%", height: "25%" }}
+          >
+            <div
+              data-cursor="IDK why i put it"
+              className="relative size-full"
+              style={{ transform: "rotate(-50deg)" }}
+            >
+              <Image
+                src="/img/bow.png"
+                alt=""
+                fill
+                sizes="440px"
+                className="object-contain"
+              />
+            </div>
+          </div>
+
+          <div
+            className="about-doodle absolute flex items-center justify-center"
+            style={{ left: "-10.5%", top: "89%", width: "80%", height: "28%" }}
+          >
+            <div
+              data-cursor="Random png"
+              className="relative size-full"
+              style={{ transform: "rotate(-6deg)" }}
+            >
+              <Image
+                src="/img/drip.png"
+                alt=""
+                fill
+                sizes="440px"
+                className="object-contain"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* LEFT (mobile): photo + stickers */}
+        <div className="relative w-[min(300px,98vw)] mx-auto md:hidden">
           <div className="about-doodle absolute -top-11 -right-6 w-24 h-40 z-20">
             <Image
               src="/img/Chill.png"
               alt=""
               fill
-              sizes="(max-width: 768px) 160px, 280px"
+              sizes="160px"
               className="object-contain"
             />
           </div>
@@ -381,7 +310,7 @@ export default function About() {
                 src="/img/tape.png"
                 alt=""
                 fill
-                sizes="(max-width: 768px) 128px, 220px"
+                sizes="128px"
                 className="object-contain"
               />
             </div>
@@ -396,7 +325,7 @@ export default function About() {
                 src="/img/drip.png"
                 alt=""
                 fill
-                sizes="(max-width: 768px) 200px, 440px"
+                sizes="200px"
                 className="object-contain"
               />
             </div>
@@ -404,13 +333,13 @@ export default function About() {
 
           <div
             ref={photoMobileRef}
-            className="relative z-10 shadow-4xl -rotate-6 w-full h-90 overflow-hidden"
+            className="relative z-10 shadow-2xl w-full h-90 overflow-hidden"
           >
             <Image
               src="/img/about.png"
               alt="Vishal Rajbhar"
               fill
-              sizes="(max-width: 768px) 100vw, 45vw"
+              sizes="300px"
               className="object-cover"
             />
           </div>
@@ -424,7 +353,7 @@ export default function About() {
                 src="/img/holdon.png"
                 alt=""
                 fill
-                sizes="(max-width: 768px) 160px, 550px"
+                sizes="160px"
                 className="object-contain"
               />
             </div>
@@ -439,40 +368,52 @@ export default function About() {
                 src="/img/bow.png"
                 alt=""
                 fill
-                sizes="(max-width: 768px) 200px, 440px"
+                sizes="200px"
                 className="object-contain"
               />
             </div>
           </div>
         </div>
 
-        <div className="mt-25 max-w-md mx-auto">
-          <h2 className="about-line font-display font-bold text-bone text-5xl leading-none mb-4">
-            Hi<span className="text-amber">!!</span>
-          </h2>
-
-          <p className="about-line text-bone-dim font-semibold text-sm leading-snug mb-5">
-            My name is Vishal Rajbhar i&apos;m a designer / Software Developer
-            based in India.
+        {/* RIGHT: text content (shared by mobile + desktop) */}
+        <div className="relative flex-1 min-w-0 mt-25 md:mt-0 max-w-md md:max-w-none mx-auto md:mx-0">
+          <p className="about-line mb-4 text-label font-semibold uppercase text-muted">
+            I&apos;m Vishal Rajbhar &mdash; Designer &amp; Full-Stack Developer
           </p>
 
-          <div className="about-line text-bone-dim text-sm leading-snug mb-5">
-            <p className="font-display font-bold text-lg mb-1">Ever since</p>
+          <h2 className="about-line mb-6 font-display leading-[0.95] text-bone text-4xl sm:text-5xl lg:text-6xl">
+            Building cinematic,
+            <span className="block">fast web experiences.</span>
+          </h2>
+
+          <div className="about-line max-w-lg space-y-5 text-base leading-relaxed text-bone-dim lg:text-lg">
             <p>
-              I remember I&apos;ve always had a special interest in visual
-              communication, from the most simple sketch to the most elaborated
-              presentation.
+              I design and build complete products end to end, from the
+              interface to the API to the deployment. My stack is Next.js,
+              NestJS, PostgreSQL and Tailwind, with Framer Motion and Three.js
+              for motion and depth.
+            </p>
+            <p>
+              I care about the details that make a site feel considered: type,
+              spacing, timing. Every project here is shipped and live, built
+              independently from scratch.
             </p>
           </div>
 
-          <div className="about-line text-bone-dim text-sm leading-snug mb-8">
-            <p>
-              <span className="font-display font-bold text-base">
-                I live to{" "}
-              </span>
-              discover and experience creative ways to express myself and do it
-              for others.
-            </p>
+          <div className="about-line mt-8 flex items-center gap-3">
+            {SOCIALS.map(({ label, href, Icon }) => (
+              <a
+                key={label}
+                href={href}
+                target={href.startsWith("http") ? "_blank" : undefined}
+                rel="noopener noreferrer"
+                aria-label={label}
+                data-cursor={label}
+                className="flex h-12 w-12 items-center justify-center rounded-full border border-line text-muted transition-colors duration-300 hover:border-amber hover:bg-amber hover:text-ink"
+              >
+                <Icon size={18} aria-hidden />
+              </a>
+            ))}
           </div>
         </div>
       </div>
